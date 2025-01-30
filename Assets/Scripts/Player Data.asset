@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a08d257a74d07ff49919c0a8f3f79590, type: 3}
+  m_Name: Player Data
+  m_EditorClassIdentifier: 
+  PLAYER_RADIUS: 1
+  PLAYER_WALK_SPEED: 6
+  PLAYER_RUN_SPEED: 18
+  PLAYER_CHARGED_SPEED: 24
+  PLAYER_JUMP_HEIGHT: 9
+  PLAYER_LEAP_HEIGHT: 24
+  PLAYER_FLY_SPEED: 32
+  PLAYER_FLY_HANDLING: 0.05
+  PLAYER_CHARGE_RATE: 0.5
+  PLAYER_DISCHARGE_RATE: 0.3
+  PLAYER_FRICTION_GROUND: 2
+  PLAYER_FRICTION_AIR: 2
+  PLAYER_IDLE_VEL_THRESHOLD: 0.3
+  PLAYER_RUN_VEL_THRESHOLD: 4
+  PLAYER_CHARGE_VEL_THRESHOLD: 4
+  PLAYER_ON_GROUND_THRESHOLD: 0.1
