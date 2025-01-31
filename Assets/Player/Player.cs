@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     public PlayerRunState RunState { get; private set; }
     public PlayerSprintState SprintState { get; private set; }
     public PlayerAirborneState AirborneState { get; private set; }
+    public PlayerFlyState FlyState { get; private set; }
 
 
     private void Awake()
@@ -57,6 +58,7 @@ public class Player : MonoBehaviour
         RunState = new PlayerRunState(this, PlayerStateMachine, "Run");
         SprintState = new PlayerSprintState(this, PlayerStateMachine, "Sprint");
         AirborneState = new PlayerAirborneState(this, PlayerStateMachine, "Airborne");
+        FlyState = new PlayerFlyState(this, PlayerStateMachine, "Fly");
 
         PlayerStateMachine.InitializeState(IdleState);
     }
@@ -186,6 +188,7 @@ public class Player : MonoBehaviour
             Vector2 normal = Normal;
             Vector2 tangent = new (-normal.y, normal.x);
             float tv = Vector2.Dot(velocity, tangent);
+            if (velocity == Vector2.zero) return;
             facing = tv < 0 ? 1 : -1;
             spriteRenderer.flipX = facing < 0;
         }

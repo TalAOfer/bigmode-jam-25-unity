@@ -19,6 +19,11 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.UpdateState();
 
+        if (player.Input.JumpInput)
+        {
+            ChangeState(player.FlyState);
+        }
+
         if (player.Input.NormInputX != 0)
         {
             AccelerateToMaxSpeed();

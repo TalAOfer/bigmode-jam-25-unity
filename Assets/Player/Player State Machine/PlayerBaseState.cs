@@ -6,6 +6,7 @@ public abstract class PlayerBaseState
     public PlayerStateMachine stateMachine;
     public string animBoolName;
     public bool hasStartedTransition;
+    protected float timeSinceEntered;
     public PlayerBaseState(Player player, PlayerStateMachine stateMachine, string animBoolName)
     {
         this.player = player;
@@ -16,6 +17,7 @@ public abstract class PlayerBaseState
 
     public virtual void OnEnterState()
     {
+        timeSinceEntered = 0;
         player.PlayerStateName = this.GetType().Name;
         player.Anim.SetBool(animBoolName, true);
     }
@@ -25,7 +27,10 @@ public abstract class PlayerBaseState
         player.Anim.SetBool(animBoolName, false);
     }
 
-    public virtual void UpdateState() { }
+    public virtual void UpdateState() 
+    {
+        timeSinceEntered += Time.deltaTime;
+    }
 
     public void ChangeState(PlayerBaseState newState)
     {

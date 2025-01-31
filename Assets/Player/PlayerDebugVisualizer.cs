@@ -71,12 +71,8 @@ public class PlayerDebugVisualizer : MonoBehaviour
         float groundThreshold = currentPlanet.radius + _data.PLAYER_ON_GROUND_THRESHOLD;
 
         // Draw ground detection threshold
-        UnityEditor.Handles.color = planetInteractionColor;
-        UnityEditor.Handles.DrawWireDisc(currentPlanet.transform.position, Vector3.forward, groundThreshold);
-
-        // Draw distance information
-        Vector3 textPosition = transform.position + Vector3.up * 0.5f;
-        UnityEditor.Handles.Label(textPosition, $"Distance: {dist:F1}");
+        Gizmos.color = planetInteractionColor;
+        Gizmos.DrawWireSphere(currentPlanet.transform.position, groundThreshold);
     }
 
     private void DrawVelocityVector()

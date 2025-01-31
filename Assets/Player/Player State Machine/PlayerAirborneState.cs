@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PlayerAirborneState : PlayerBaseState
 {
-    private float timer;
     public PlayerAirborneState(Player player, PlayerStateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
     {
     }
@@ -11,7 +10,6 @@ public class PlayerAirborneState : PlayerBaseState
     {
         base.OnEnterState();
 
-        timer = 0;
         // Apply jump force in the correct "up" direction
         player.velocity += (Vector2)player.transform.up * player.Data.PLAYER_JUMP_HEIGHT;
 
@@ -27,9 +25,7 @@ public class PlayerAirborneState : PlayerBaseState
         player.UpdateFacingDirection();
         UpdateAnimatorAccordingToVerticalVelocity();
 
-        timer += Time.deltaTime;
-
-        if (timer > 0.5f && player.IsGrounded())
+        if (timeSinceEntered > 0.5f && player.IsGrounded())
         {
             ChangeState(player.IdleState);
         }

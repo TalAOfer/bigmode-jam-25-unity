@@ -31,4 +31,17 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
+    public void HandleJumpInput(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started)
+        {
+            JumpInput = true;
+        }
+
+        else if (ctx.canceled)
+        {
+            JumpInput = false;
+        }
+    }
+
 }

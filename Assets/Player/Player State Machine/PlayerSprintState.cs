@@ -20,7 +20,7 @@ public class PlayerSprintState : PlayerGroundedState
         if (player.Input.NormInputX != 0 && player.Input.SprintInput)
         {
             AccelerateToMaxSpeed();
-        } 
+        }
         
         else
         {
