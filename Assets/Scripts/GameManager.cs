@@ -173,7 +173,14 @@ public class GameManager : MonoBehaviour
 
     private void UpdateGameState()
     {
+        Vector2 prev = player.currentPlanet.transform.position;
+
         UpdatePlanets();
+
+        Vector2 curr = player.currentPlanet.transform.position;
+
+        player.transform.position += (Vector3)(curr - prev);
+
         UpdateVisiblePlanets();
         UpdatePlayerState();
         UpdatePaletteLerp();
