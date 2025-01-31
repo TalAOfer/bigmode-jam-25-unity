@@ -18,7 +18,6 @@ public class PlayerDebugVisualizer : MonoBehaviour
     [SerializeField] private Color groundNormalColor = Color.blue;
 
     [Header("Line Settings")]
-    [SerializeField] private float lineThickness = 2f;
     [SerializeField] private float velocityLineScale = 0.5f; // Scale factor for velocity vector
 
     private Player player;
@@ -48,7 +47,7 @@ public class PlayerDebugVisualizer : MonoBehaviour
             DrawVelocityVector();
         }
 
-        if (showGroundNormal && player.onGround && currentPlanet != null)
+        if (showGroundNormal && player.IsGrounded() && currentPlanet != null)
         {
             DrawGroundNormal();
         }

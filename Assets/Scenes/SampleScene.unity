@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 23482041}
   - component: {fileID: 23482040}
   - component: {fileID: 23482042}
+  - component: {fileID: 23482043}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -294,7 +295,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: -2752584300984662343, guid: 74b93bd0717ea7d42b56083c87fd10b1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -334,18 +335,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data: {fileID: 11400000, guid: 7b4657838db590b44817b76d919cb76f, type: 2}
   _input: {fileID: 23482041}
-  spriteRenderer: {fileID: 0}
-  state: 1
+  spriteRenderer: {fileID: 23482038}
   position: {x: 0, y: 0}
   velocity: {x: 0, y: 0}
   direction: {x: 0, y: 0}
   facing: 1
   rotation: 0
   sprinting: 0
-  onGround: 0
   charge: 0
   planetIdx: 0
+  currentPlanet: {fileID: 0}
   showDebugGizmos: 1
+  verticalVelocity: 0
+  PlayerStateName: 
 --- !u!114 &23482041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -379,8 +381,86 @@ MonoBehaviour:
   planetInteractionColor: {r: 0, g: 1, b: 1, a: 0.5}
   velocityColor: {r: 0, g: 1, b: 0, a: 1}
   groundNormalColor: {r: 0, g: 0, b: 1, a: 1}
-  lineThickness: 2
   velocityLineScale: 0.5
+--- !u!95 &23482043
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23482036}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 95af7fd010ed33e4b951d0613859f54e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &95512578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 95512580}
+  - component: {fileID: 95512579}
+  m_Layer: 0
+  m_Name: Camera Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &95512579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95512578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea006e97fc1d1804cb5d08c71e16e03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {x: 0, y: 0}
+  baseZoom: 2
+  angle: 0
+  easing: 0.1
+  normalZoom: 10
+  sprintZoom: 15
+  flyZoom: 8
+  rotationSpeed: 0.2
+  shakeOffset: {x: 0, y: 0}
+  shakeAmount: 0
+  shakeTime: 0
+  cam: {fileID: 519420031}
+  player: {fileID: 23482040}
+--- !u!4 &95512580
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95512578}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &152728848
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,8 +539,8 @@ MonoBehaviour:
       rgba: 0
     - serializedVersion: 2
       rgba: 0
-  planet1DistanceFromSun: 50
-  planet2DistanceFromSun: 100
+  planet1DistanceFromSun: 500
+  planet2DistanceFromSun: 1000
   cloudSprites: []
   foregroundDecorations: []
   backgroundDecorations: []
@@ -497,7 +577,6 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
-  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -623,31 +702,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &519420033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea006e97fc1d1804cb5d08c71e16e03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {x: 0, y: 0}
-  baseZoom: 2
-  angle: 0
-  easing: 0.1
-  normalZoom: 10
-  sprintZoom: 15
-  flyZoom: 8
-  rotationSpeed: 0.2
-  shakeOffset: {x: 0, y: 0}
-  shakeAmount: 0
-  shakeTime: 0
-  showDebugGizmos: 1
-  player: {fileID: 23482040}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,3 +794,4 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 23482039}
   - {fileID: 152728850}
+  - {fileID: 95512580}
