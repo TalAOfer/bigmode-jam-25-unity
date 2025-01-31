@@ -15,12 +15,13 @@ public class Player : MonoBehaviour
     public Animator Anim {  get; private set; }
 
     [ShowInInspector]public bool View_IsGrounded => IsGrounded();
-
+    [ShowInInspector] public bool View_IsTransitioningState => PlayerStateMachine != null
+        && PlayerStateMachine.CurrentState != null
+        && PlayerStateMachine.CurrentState.hasStartedTransition;
     public Vector2 ToPlanet => transform.position - currentPlanet.transform.position;
     public Vector2 Normal => ToPlanet.normalized;
 
     [Header("State")]
-    [ReadOnly] public Vector2 position;
     [ReadOnly] public Vector2 velocity;
     [ReadOnly] public Vector2 direction;
     [ReadOnly] public int facing = 1;
@@ -50,8 +51,6 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         Anim = GetComponent<Animator>();
 
-        position = transform.position;
-
         PlayerStateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, PlayerStateMachine, "Idle");
         WalkState = new PlayerWalkState(this, PlayerStateMachine, "Walk");
@@ -70,9 +69,14 @@ public class Player : MonoBehaviour
         //ProcessInput(currentPlanet, _input.NormInputX, _input.NormInputY, _input.SprintInput, Time.deltaTime);
 
         PlayerStateMachine?.CurrentState?.UpdateState();
-        UpdatePlayer();
         
-        UpdateVisuals();
+        UpdatePlayer();
+    }
+
+    private void UpdatePlayer()
+    {
+        transform.position += (Vector3) velocity * Time.deltaTime;
+        transform.rotation = Quaternion.Euler(0, 0, rotation);
     }
 
     public void GetClosestPlanet(List<Planet> planets)
@@ -82,7 +86,7 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < planets.Count; i++)
         {
-            Vector2 diff = planets[i].position - position;
+            Vector2 diff = planets[i].position - (Vector2)transform.position;
             float dist = diff.magnitude;
             float edge = dist - (planets[i].radius + _data.PLAYER_RADIUS);
 
@@ -98,82 +102,6 @@ public class Player : MonoBehaviour
             planetIdx = closestIdx;
             // Optional: Add planet transition effects here
         }
-    }
-
-    //private void ProcessGroundedStates(Planet planet, float x, float y, bool sprintInput, float dt)
-    //{
-    //    bool moved = x != 0;
-    //    bool jumped = y > 0 && onGround;
-    //    bool leaped = jumped && sprinting && charge >= 1;
-
-    //    float speed = _data.PLAYER_WALK_SPEED;
-    //    float height = _data.PLAYER_JUMP_HEIGHT;
-    //    float mag = velocity.magnitude;
-
-    //    // Handle movement direction and facing
-    //    if (moved)
-    //    {
-    //        Vector2 toPlanet = position - planet.position;
-    //        Vector2 normal = toPlanet.normalized;
-    //        Vector2 tangent = new Vector2(-normal.y, normal.x);
-    //        float tv = Vector2.Dot(velocity, tangent);
-    //        facing = tv < 0 ? 1 : -1; // Flipped the facing logic
-    //    }
-
-    //    // Ground state checks
-    //    if (!moved && onGround && mag < _data.PLAYER_IDLE_VEL_THRESHOLD)
-    //    {
-    //        velocity = Vector2.zero;
-    //    }
-
-    //    // Sprint handling
-    //    if (onGround)
-    //    {
-    //        sprinting = sprintInput;
-    //    }
-
-    //    if (sprinting)
-    //    {
-    //        speed = charge >= 1 ? _data.PLAYER_CHARGED_SPEED : _data.PLAYER_RUN_SPEED;
-    //    }
-
-    //    if (leaped)
-    //    {
-    //        height = _data.PLAYER_LEAP_HEIGHT;
-    //    }
-
-    //    // State transitions
-    //    if (jumped && leaped)
-    //    {
-    //        if (!moved)
-    //        {
-    //            EnterFlyState(planet);
-    //        }
-    //        else
-    //        {
-    //            EnterLeapState();
-    //        }
-    //        return;
-    //    }
-
-    //    // Movement and jump physics
-    //    if (moved || jumped)
-    //    {
-    //        ApplyMovement(planet, x, jumped, speed, height, dt);
-    //    }
-    //}
-
-    private void ProcessLeapState(Planet planet, float dt)
-    {
-        //float speed = _data.PLAYER_CHARGED_SPEED;
-        //Vector2 toPlanet = position - planet.position;
-        //Vector2 normal = toPlanet.normalized;
-
-        //if (prevX != 0)
-        //{
-        //    Vector2 moveDirection = prevX > 0 ? new Vector2(-normal.y, normal.x) : new Vector2(normal.y, -normal.x); // Flipped movement direction
-        //    velocity += dt * speed * moveDirection;
-        //}
     }
 
     private void ProcessFlyState(float x, float y)
@@ -197,17 +125,9 @@ public class Player : MonoBehaviour
         direction = direction.normalized;
     }
 
-    private void UpdatePlayer()
-    {
-        transform.position = new Vector3(position.x, position.y, 0);
-        transform.rotation = Quaternion.Euler(0, 0, rotation);
-    }
-
     private void UpdateFlyState(Planet planet)
     {
-        position += velocity * Time.deltaTime;
-
-        Vector2 toPlanet = position - planet.position;
+        Vector2 toPlanet = (Vector2)transform.position - planet.position;
         float dist = toPlanet.magnitude;
         float edge = planet.radius + _data.PLAYER_RADIUS;
 
@@ -221,28 +141,30 @@ public class Player : MonoBehaviour
     public bool IsGrounded()
     {
         if (currentPlanet == null) return false;
+        Vector2 toPlanet = (Vector2)transform.position - currentPlanet.position;
+        float dist = toPlanet.magnitude;
+        float edge = currentPlanet.radius + Data.PLAYER_RADIUS;
+        return dist < edge + Data.PLAYER_ON_GROUND_THRESHOLD;
+    }
 
-        Vector2 toPlanet = position - currentPlanet.position;
+    public void HandleGroundCollision()
+    {
+        Vector2 toPlanet = (Vector2)transform.position - currentPlanet.position;
         float dist = toPlanet.magnitude;
         float edge = currentPlanet.radius + Data.PLAYER_RADIUS;
 
+        // Only handle collision if we're actually colliding
         if (dist < edge + Data.PLAYER_ON_GROUND_THRESHOLD)
         {
-            // Handle ground collision
             Vector2 normal = toPlanet / dist;
-            position = currentPlanet.position + normal * edge;
+            transform.position = currentPlanet.position + normal * edge;
             lastNormal = normal;
-
             float vel = Vector2.Dot(velocity, normal);
             if (vel < 0)
             {
                 velocity -= vel * normal;
             }
-
-            return true;
         }
-
-        return false;
     }
 
     public void ApplyFriction(Planet planet, float dist, float dt)
@@ -257,28 +179,15 @@ public class Player : MonoBehaviour
         velocity *= 1 / (1 + friction * dt);
     }
 
-    private void UpdateVisuals()
+    public void UpdateFacingDirection()
     {
         if (spriteRenderer != null)
         {
+            Vector2 normal = Normal;
+            Vector2 tangent = new (-normal.y, normal.x);
+            float tv = Vector2.Dot(velocity, tangent);
+            facing = tv < 0 ? 1 : -1;
             spriteRenderer.flipX = facing < 0;
-        }
-    }
-
-    private void ApplyMovement(Planet planet, float x, bool jumped, float speed, float height, float dt)
-    {
-        Vector2 toPlanet = position - planet.position;
-        Vector2 normal = toPlanet.normalized;
-
-        if (x != 0)
-        {
-            Vector2 moveDir = x > 0 ? new Vector2(normal.y, -normal.x) : new Vector2(-normal.y, normal.x);
-            velocity += dt * speed * moveDir;
-        }
-
-        if (jumped)
-        {
-            velocity += normal * height;
         }
     }
 

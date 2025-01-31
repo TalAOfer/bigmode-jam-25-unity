@@ -66,21 +66,12 @@ public class PlayerDebugVisualizer : MonoBehaviour
 
     private void DrawPlanetInteraction()
     {
-        Vector2 toPlanet = currentPlanet.position - player.position;
+        Vector2 toPlanet = player.ToPlanet;
         float dist = toPlanet.magnitude;
-        float interactionRadius = currentPlanet.radius + _data.PLAYER_RADIUS;
-        float groundThreshold = interactionRadius + _data.PLAYER_ON_GROUND_THRESHOLD;
-
-        // Draw line to current planet
-        Gizmos.color = planetInteractionColor;
-        Gizmos.DrawLine(transform.position, currentPlanet.transform.position);
-
-        // Draw interaction range
-        UnityEditor.Handles.color = new Color(planetInteractionColor.r, planetInteractionColor.g, planetInteractionColor.b, 0.2f);
-        UnityEditor.Handles.DrawWireDisc(currentPlanet.transform.position, Vector3.forward, interactionRadius);
+        float groundThreshold = currentPlanet.radius + _data.PLAYER_ON_GROUND_THRESHOLD;
 
         // Draw ground detection threshold
-        UnityEditor.Handles.color = new Color(planetInteractionColor.r, planetInteractionColor.g, planetInteractionColor.b, 0.1f);
+        UnityEditor.Handles.color = planetInteractionColor;
         UnityEditor.Handles.DrawWireDisc(currentPlanet.transform.position, Vector3.forward, groundThreshold);
 
         // Draw distance information
@@ -107,8 +98,7 @@ public class PlayerDebugVisualizer : MonoBehaviour
 
     private void DrawGroundNormal()
     {
-        Vector2 toPlanet = player.position - currentPlanet.position;
-        Vector2 normal = toPlanet.normalized;
+        Vector2 normal = player.Normal;
         Vector3 normalEnd = transform.position + (Vector3)(normal * _data.PLAYER_RADIUS * 1.5f);
 
         Gizmos.color = groundNormalColor;

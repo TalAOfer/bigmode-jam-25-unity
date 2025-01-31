@@ -1,7 +1,6 @@
 public class PlayerStateMachine
 {
     public PlayerBaseState CurrentState;
-
     public void InitializeState(PlayerBaseState startState)
     {
         CurrentState = startState;
@@ -15,5 +14,6 @@ public class PlayerStateMachine
         CurrentState.OnExitState();
         CurrentState = newState;
         CurrentState.OnEnterState();
+        CurrentState.hasStartedTransition = false;
     }
 }

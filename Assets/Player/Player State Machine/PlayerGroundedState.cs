@@ -9,13 +9,17 @@ public abstract class PlayerGroundedState : PlayerBaseState
     public override void UpdateState()
     {
         base.UpdateState();
+        
+        ApplyPlanetPhysics();
+        player.HandleGroundCollision();
+        player.UpdateFacingDirection();
 
-        if (player.Input.NormInputY > 0)
+        if (player.Input.NormInputY > 0 && player.IsGrounded())
         {
-            stateMachine.ChangeState(player.AirborneState);
+            ChangeState(player.AirborneState);
         }
 
-        ApplyPlanetPhysics();
+
     }
     
     protected void UpdateStateAccordingToSpeed()
@@ -24,24 +28,26 @@ public abstract class PlayerGroundedState : PlayerBaseState
 
         if (speed > player.Data.SPRINT_THRESHOLD)
         {
-            stateMachine.ChangeState(player.SprintState);
+            ChangeState(player.SprintState);
         }
         else if (speed > player.Data.RUN_THRESHOLD)
         {
-            stateMachine.ChangeState(player.RunState);
+            ChangeState(player.RunState);
         }
         else if (speed > player.Data.WALK_THRESHOLD)
         {
-            stateMachine.ChangeState(player.WalkState);
+            ChangeState(player.WalkState);
         }
         else
         {
-            stateMachine.ChangeState(player.IdleState);
+            ChangeState(player.IdleState);
         }
     }
 
     protected void AccelerateToMaxSpeed()
     {
+        if (hasStartedTransition) return;
+
         float xInput = player.Input.NormInputX;
         bool sprintPressed = player.Input.SprintInput;
 
@@ -62,11 +68,6 @@ public abstract class PlayerGroundedState : PlayerBaseState
         // Apply acceleration
         player.velocity += acceleration * dt * moveDir;
 
-        // Update facing
-        Vector2 tangent = new Vector2(-normal.y, normal.x);
-        float tv = Vector2.Dot(player.velocity, tangent);
-        player.facing = tv < 0 ? 1 : -1;
-
         float maxSpeed = GetMaxSpeed(sprintPressed);
         if (player.velocity.magnitude > maxSpeed)
         {
@@ -76,6 +77,8 @@ public abstract class PlayerGroundedState : PlayerBaseState
 
     protected void Decelerate()
     {
+        if (hasStartedTransition) return;
+
         player.velocity = Vector2.Lerp(player.velocity, Vector2.zero, Time.deltaTime * player.Data.PLAYER_DECELERATION);
     }
 

@@ -65,7 +65,7 @@ public class CameraController : MonoBehaviour
     private void UpdateBasedOnState()
     {
         // Update target to follow player
-        target = player.position;
+        target = player.transform.position;
 
         // Set zoom based on state
         float targetZoom = currentState switch
@@ -83,7 +83,7 @@ public class CameraController : MonoBehaviour
             player.planetIdx < GameManager.Instance.planets.Count)
         {
             Planet currentPlanet = GameManager.Instance.planets[player.planetIdx];
-            Vector2 toPlanet = currentPlanet.position - player.position;
+            Vector2 toPlanet = currentPlanet.position - (Vector2)player.transform.position;
 
             float targetRotation = Mathf.Atan2(-toPlanet.x, toPlanet.y) * Mathf.Rad2Deg + 180f;
             float angleDiff = Mathf.DeltaAngle(currentRotation, targetRotation);

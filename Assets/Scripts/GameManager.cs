@@ -165,9 +165,6 @@ public class GameManager : MonoBehaviour
         }
 
         player.planetIdx = 0; // Default to first planet
-
-        // Ensure player is correctly positioned in Unity space
-        player.transform.position = new Vector3(player.position.x, player.position.y, 0);
     }
 
     #endregion
@@ -230,26 +227,26 @@ public class GameManager : MonoBehaviour
 
     private void WrapPlayerPosition()
     {
-        Vector2 newPosition = player.position;
+        Vector2 newPosition = (Vector2)player.transform.position;
         bool positionChanged = false;
 
-        if (player.position.x < -worldBoundary)
+        if (player.transform.position.x < -worldBoundary)
         {
             newPosition.x = worldBoundary - 1000f;
             positionChanged = true;
         }
-        else if (player.position.x > worldBoundary)
+        else if (player.transform.position.x > worldBoundary)
         {
             newPosition.x = -worldBoundary + 1000f;
             positionChanged = true;
         }
 
-        if (player.position.y < -worldBoundary)
+        if (player.transform.position.y < -worldBoundary)
         {
             newPosition.y = worldBoundary - 1000f;
             positionChanged = true;
         }
-        else if (player.position.y > worldBoundary)
+        else if (player.transform.position.y > worldBoundary)
         {
             newPosition.y = -worldBoundary + 1000f;
             positionChanged = true;
@@ -257,8 +254,7 @@ public class GameManager : MonoBehaviour
 
         if (positionChanged)
         {
-            player.position = newPosition;
-            player.transform.position = new Vector3(newPosition.x, newPosition.y, 0);
+            player.transform.position = newPosition;
         }
     }
 
@@ -275,7 +271,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Update sky color
-        float dist = Vector2.Distance(player.position, currentPlanet.position);
+        float dist = Vector2.Distance(player.transform.position, currentPlanet.position);
         float t = Mathf.Clamp01((dist - currentPlanet.radius * planetVisibilityMultiplier) /
                                (currentPlanet.radius * planetVisibilityMultiplier));
         skyColor = Mathf.Lerp(skyColorMax, skyColorMin, t);

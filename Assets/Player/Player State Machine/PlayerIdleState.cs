@@ -10,6 +10,7 @@ public class PlayerIdleState : PlayerGroundedState
     public override void OnEnterState()
     {
         base.OnEnterState();
+        player.velocity = Vector3.zero;
 
         CameraController.Instance.SetCameraState(CameraController.CameraState.Normal);
     }
@@ -24,7 +25,7 @@ public class PlayerIdleState : PlayerGroundedState
             UpdateStateAccordingToSpeed();
         }
 
-        else
+        else if (player.velocity.magnitude != 0)
         {
             Decelerate();
             UpdateStateAccordingToSpeed();
