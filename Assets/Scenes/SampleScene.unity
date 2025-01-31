@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 23482037}
   - component: {fileID: 23482041}
   - component: {fileID: 23482040}
+  - component: {fileID: 23482042}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -314,8 +315,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2.971, z: 0}
-  m_LocalScale: {x: 0.4726, y: 0.4726, z: 0.4726}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -333,6 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data: {fileID: 11400000, guid: 7b4657838db590b44817b76d919cb76f, type: 2}
   _input: {fileID: 23482041}
+  spriteRenderer: {fileID: 0}
   state: 1
   position: {x: 0, y: 0}
   velocity: {x: 0, y: 0}
@@ -343,9 +345,7 @@ MonoBehaviour:
   onGround: 0
   charge: 0
   planetIdx: 0
-  animations: []
-  currentAnimation:
-    elapsed: 0
+  showDebugGizmos: 1
 --- !u!114 &23482041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,6 +358,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4787dc52cea6644ca10114963b69e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &23482042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23482036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e11642fb1d0056e48ac6778f31872e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data: {fileID: 11400000, guid: 7b4657838db590b44817b76d919cb76f, type: 2}
+  showCollision: 1
+  showPlanetInteraction: 1
+  showVelocity: 1
+  showGroundNormal: 1
+  collisionColor: {r: 1, g: 1, b: 0, a: 0.5}
+  planetInteractionColor: {r: 0, g: 1, b: 1, a: 0.5}
+  velocityColor: {r: 0, g: 1, b: 0, a: 1}
+  groundNormalColor: {r: 0, g: 0, b: 1, a: 1}
+  lineThickness: 2
+  velocityLineScale: 0.5
 --- !u!1 &152728848
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,10 +412,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 23482040}
   mainCamera: {fileID: 519420031}
+  planetsContainer: {fileID: 0}
   planetPrefab: {fileID: 4773227347613399592, guid: 50da80a30716f1943a4ce032f508d343, type: 3}
   sunBlueprint:
     name: Sun
-    radius: 640
+    radius: 12
     gravity: 16
     palette:
     - serializedVersion: 2
@@ -405,11 +429,9 @@ MonoBehaviour:
       rgba: 0
     - serializedVersion: 2
       rgba: 0
-  planet1DistanceFromSun: 4
-  planet2DistanceFromSun: 7
   planet1Blueprint:
     name: Planet 1
-    radius: 1024
+    radius: 32
     gravity: 16
     palette:
     - serializedVersion: 2
@@ -424,7 +446,7 @@ MonoBehaviour:
       rgba: 0
   planet2Blueprint:
     name: Planet 2
-    radius: 800
+    radius: 24
     gravity: 24
     palette:
     - serializedVersion: 2
@@ -437,9 +459,16 @@ MonoBehaviour:
       rgba: 0
     - serializedVersion: 2
       rgba: 0
+  planet1DistanceFromSun: 50
+  planet2DistanceFromSun: 100
   cloudSprites: []
   foregroundDecorations: []
   backgroundDecorations: []
+  worldBoundary: 16000
+  colorLerpSpeed: 0.05
+  skyColorMin: 0
+  skyColorMax: 0.77
+  planetVisibilityMultiplier: 1.5
   planets: []
 --- !u!4 &152728850
 Transform:
@@ -607,13 +636,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {x: 0, y: 0}
-  zoom: 5
+  baseZoom: 2
   angle: 0
   easing: 0.1
-  maxDistance: 128
+  normalZoom: 10
+  sprintZoom: 15
+  flyZoom: 8
+  rotationSpeed: 0.2
   shakeOffset: {x: 0, y: 0}
   shakeAmount: 0
   shakeTime: 0
+  showDebugGizmos: 1
+  player: {fileID: 23482040}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0

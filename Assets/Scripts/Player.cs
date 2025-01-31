@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private PlayerData _data;
     [SerializeField] private PlayerInputController _input;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     public enum PlayerState
     {
@@ -27,6 +29,7 @@ public class Player : MonoBehaviour
         // Add other animation properties as needed
     }
 
+    [Header("State")]
     public PlayerState state;
     public Vector2 position;
     public Vector2 velocity;
@@ -37,14 +40,22 @@ public class Player : MonoBehaviour
     public bool onGround;
     public float charge;
     public int planetIdx;
-    public PlayerAnimation[] animations;
-    public PlayerAnimation currentAnimation;
 
-    private static float prevX = 0;
-    private static float prevY = 0;
+    [Header("Debug")]
+    [SerializeField] private bool showDebugGizmos = true;
 
-    void Awake()
+    private PlayerAnimation[] animations;
+    private PlayerAnimation currentAnimation;
+    private float prevX = 0;
+    private float prevY = 0;
+    private Vector2 lastNormal;
+
+    private void Awake()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        position = transform.position;
+
+        // Initialize animations
         animations = new PlayerAnimation[(int)PlayerState.Count];
         for (int i = 0; i < (int)PlayerState.Count; i++)
         {
@@ -55,13 +66,18 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        ProcessInput(GameManager.Instance.planets[planetIdx], _input.NormInputX, _input.NormInputY, _input.SprintInput, Time.deltaTime);
-        UpdatePlayer(GameManager.Instance.planets[planetIdx], Time.deltaTime);
+        if (GameManager.Instance == null || planetIdx >= GameManager.Instance.planets.Count) return;
+
+        Planet currentPlanet = GameManager.Instance.planets[planetIdx];
+        ProcessInput(currentPlanet, _input.NormInputX, _input.NormInputY, _input.SprintInput, Time.deltaTime);
+        UpdatePlayer(currentPlanet, Time.deltaTime);
+        UpdateVisuals();
     }
 
     public void GetClosestPlanet(List<Planet> planets)
     {
         float closest = float.MaxValue;
+        int closestIdx = planetIdx;
 
         for (int i = 0; i < planets.Count; i++)
         {
@@ -72,12 +88,18 @@ public class Player : MonoBehaviour
             if (edge < closest)
             {
                 closest = edge;
-                planetIdx = i;
+                closestIdx = i;
             }
+        }
+
+        if (planetIdx != closestIdx)
+        {
+            planetIdx = closestIdx;
+            // Optional: Add planet transition effects here
         }
     }
 
-    public void ProcessInput(Planet planet, float x, float y, bool sprinting, float dt)
+    private void ProcessInput(Planet planet, float x, float y, bool sprintInput, float dt)
     {
         switch (state)
         {
@@ -87,139 +109,15 @@ public class Player : MonoBehaviour
             case PlayerState.Sprint:
             case PlayerState.Jump:
             case PlayerState.Fall:
-                {
-                    bool moved = x != 0;
-                    bool jumped = y > 0 && onGround;
-                    bool leaped = jumped && sprinting && charge >= 1;
-
-                    float speed = _data.PLAYER_WALK_SPEED;
-                    float height = _data.PLAYER_JUMP_HEIGHT;
-
-                    float mag = velocity.magnitude;
-
-                    if (moved)
-                    {
-                        Vector2 toPlanet = position - planet.position;
-                        float dist = toPlanet.magnitude;
-                        Vector2 normal = toPlanet.normalized;
-                        Vector2 tangent = new Vector2(-normal.y, normal.x);
-                        float tv = Vector2.Dot(velocity, tangent);
-                        facing = tv > 0 ? 1 : -1;
-                    }
-
-                    if (!moved && onGround && mag < _data.PLAYER_IDLE_VEL_THRESHOLD)
-                    {
-                        velocity = Vector2.zero;
-                    }
-
-                    if (onGround)
-                    {
-                        this.sprinting = sprinting;
-                    }
-
-                    if (this.sprinting)
-                    {
-                        speed = _data.PLAYER_RUN_SPEED;
-                        if (charge >= 1)
-                        {
-                            speed = _data.PLAYER_CHARGED_SPEED;
-                        }
-                    }
-
-                    if (leaped)
-                    {
-                        height = _data.PLAYER_LEAP_HEIGHT;
-                    }
-
-                    if (jumped && leaped)
-                    {
-                        state = PlayerState.Leap;
-                        charge -= 1;
-                    }
-
-                    if (moved || jumped)
-                    {
-                        Vector2 toPlanet = position - planet.position;
-                        float dist = toPlanet.magnitude;
-                        Vector2 normal = toPlanet.normalized;
-
-                        if (x > 0)
-                        {
-                            velocity += new Vector2(-normal.y, normal.x) * speed * dt;
-                        }
-                        if (x < 0)
-                        {
-                            velocity += new Vector2(normal.y, -normal.x) * speed * dt;
-                        }
-
-                        if (jumped)
-                        {
-                            velocity += normal * height;
-                        }
-                    }
-
-                    if (jumped && leaped && !moved)
-                    {
-                        state = PlayerState.Fly;
-                        onGround = false;
-
-                        Vector2 toPlanet = position - planet.position;
-                        direction = toPlanet.normalized;
-                    }
-                }
+                ProcessGroundedStates(planet, x, y, sprintInput, dt);
                 break;
 
             case PlayerState.Leap:
-                {
-                    float speed = _data.PLAYER_CHARGED_SPEED;
-                    Vector2 toPlanet = position - planet.position;
-                    float dist = toPlanet.magnitude;
-                    Vector2 normal = toPlanet.normalized;
-
-                    if (prevX > 0)
-                    {
-                        velocity += new Vector2(-normal.y, normal.x) * speed * dt;
-                    }
-                    if (prevX < 0)
-                    {
-                        velocity += new Vector2(normal.y, -normal.x) * speed * dt;
-                    }
-
-                    x = prevX;
-                    y = prevY;
-                }
+                ProcessLeapState(planet, dt);
                 break;
 
             case PlayerState.Fly:
-                {
-                    velocity = direction * _data.PLAYER_FLY_SPEED;
-                    bool moved = x != 0 || y != 0;
-
-                    if (!moved) return;
-
-                    if (x == 0) x = 1 - Mathf.Abs(y);
-                    if (y == 0) y = 1 - Mathf.Abs(x);
-
-                    float rads = rotation * Mathf.Deg2Rad;
-                    float c = Mathf.Cos(rads);
-                    float s = Mathf.Sin(rads);
-
-                    Vector2 target = new Vector2(
-                        x * c - y * s,
-                        x * s + y * c
-                    ).normalized;
-
-                    direction = Vector2.Lerp(direction, target, _data.PLAYER_FLY_HANDLING);
-
-                    if (direction.magnitude != 0)
-                    {
-                        direction = direction.normalized;
-                    }
-                    else
-                    {
-                        direction = Vector2.zero;
-                    }
-                }
+                ProcessFlyState(x, y);
                 break;
         }
 
@@ -227,7 +125,104 @@ public class Player : MonoBehaviour
         prevY = y;
     }
 
-    public void UpdatePlayer(Planet planet, float dt)
+    private void ProcessGroundedStates(Planet planet, float x, float y, bool sprintInput, float dt)
+    {
+        bool moved = x != 0;
+        bool jumped = y > 0 && onGround;
+        bool leaped = jumped && sprinting && charge >= 1;
+
+        float speed = _data.PLAYER_WALK_SPEED;
+        float height = _data.PLAYER_JUMP_HEIGHT;
+        float mag = velocity.magnitude;
+
+        // Handle movement direction and facing
+        if (moved)
+        {
+            Vector2 toPlanet = position - planet.position;
+            Vector2 normal = toPlanet.normalized;
+            Vector2 tangent = new Vector2(-normal.y, normal.x);
+            float tv = Vector2.Dot(velocity, tangent);
+            facing = tv > 0 ? 1 : -1;
+        }
+
+        // Ground state checks
+        if (!moved && onGround && mag < _data.PLAYER_IDLE_VEL_THRESHOLD)
+        {
+            velocity = Vector2.zero;
+        }
+
+        // Sprint handling
+        if (onGround)
+        {
+            sprinting = sprintInput;
+        }
+
+        if (sprinting)
+        {
+            speed = charge >= 1 ? _data.PLAYER_CHARGED_SPEED : _data.PLAYER_RUN_SPEED;
+        }
+
+        if (leaped)
+        {
+            height = _data.PLAYER_LEAP_HEIGHT;
+        }
+
+        // State transitions
+        if (jumped && leaped)
+        {
+            if (!moved)
+            {
+                EnterFlyState(planet);
+            }
+            else
+            {
+                EnterLeapState();
+            }
+            return;
+        }
+
+        // Movement and jump physics
+        if (moved || jumped)
+        {
+            ApplyMovement(planet, x, jumped, speed, height, dt);
+        }
+    }
+
+    private void ProcessLeapState(Planet planet, float dt)
+    {
+        float speed = _data.PLAYER_CHARGED_SPEED;
+        Vector2 toPlanet = position - planet.position;
+        Vector2 normal = toPlanet.normalized;
+
+        if (prevX != 0)
+        {
+            Vector2 moveDirection = prevX > 0 ? new Vector2(normal.y, -normal.x) : new Vector2(-normal.y, normal.x);
+            velocity += moveDirection * speed * dt;
+        }
+    }
+
+    private void ProcessFlyState(float x, float y)
+    {
+        velocity = direction * _data.PLAYER_FLY_SPEED;
+
+        if (x == 0 && y == 0) return;
+
+        // Normalize diagonal movement
+        if (x == 0) x = 1 - Mathf.Abs(y);
+        if (y == 0) y = 1 - Mathf.Abs(x);
+
+        // Calculate target direction in planet space
+        float rads = rotation * Mathf.Deg2Rad;
+        Vector2 target = new Vector2(
+            x * Mathf.Cos(rads) - y * Mathf.Sin(rads),
+            x * Mathf.Sin(rads) + y * Mathf.Cos(rads)
+        ).normalized;
+
+        direction = Vector2.Lerp(direction, target, _data.PLAYER_FLY_HANDLING);
+        direction = direction.normalized;
+    }
+
+    private void UpdatePlayer(Planet planet, float dt)
     {
         switch (state)
         {
@@ -238,141 +233,219 @@ public class Player : MonoBehaviour
             case PlayerState.Jump:
             case PlayerState.Fall:
             case PlayerState.Leap:
-                {
-                    Vector2 toPlanet = planet.position - position;
-                    rotation = Mathf.Atan2(-toPlanet.x, toPlanet.y) * Mathf.Rad2Deg;
-
-                    float dist = toPlanet.magnitude;
-                    float edge = planet.radius + _data.PLAYER_RADIUS;
-
-                    if (dist > 0)
-                    {
-                        if (dist >= edge)
-                        {
-                            Vector2 normal = toPlanet / dist;
-                            velocity += dt * planet.gravity * normal;
-                        }
-                    }
-
-                    position += velocity;
-                    transform.position = new Vector3(position.x, position.y, 0);
-
-                    toPlanet = position - planet.position;
-                    dist = toPlanet.magnitude;
-
-                    if (dist < edge + _data.PLAYER_ON_GROUND_THRESHOLD)
-                    {
-                        Vector2 normal = toPlanet / dist;
-                        position = planet.position + normal * edge;
-
-                        float vel = Vector2.Dot(velocity, normal);
-                        if (vel < 0)
-                        {
-                            velocity -= vel * normal;
-                        }
-
-                        onGround = true;
-                    }
-                    else
-                    {
-                        onGround = false;
-                    }
-
-                    float t = Mathf.Clamp01((dist - planet.radius) / planet.radius);
-                    float friction = Mathf.Lerp(onGround ? _data.PLAYER_FRICTION_GROUND : _data.PLAYER_FRICTION_AIR, 1, t);
-
-                    velocity *= 1 / (1 + friction * dt);
-
-                    if (onGround)
-                    {
-                        float mag = velocity.magnitude;
-
-                        if (mag < _data.PLAYER_IDLE_VEL_THRESHOLD)
-                        {
-                            state = PlayerState.Idle;
-                        }
-                        else if (mag > _data.PLAYER_RUN_VEL_THRESHOLD)
-                        {
-                            state = sprinting && charge >= 1 ? PlayerState.Sprint : PlayerState.Run;
-                        }
-                        else
-                        {
-                            state = PlayerState.Walk;
-                        }
-
-                        float chargeChange = 0;
-                        if (mag > _data.PLAYER_CHARGE_VEL_THRESHOLD)
-                        {
-                            chargeChange = _data.PLAYER_CHARGE_RATE * dt;
-                        }
-                        else if (charge < 1)
-                        {
-                            chargeChange = -_data.PLAYER_DISCHARGE_RATE * dt;
-                        }
-
-                        charge = Mathf.Clamp(charge + chargeChange, 0, 1);
-
-                        if (dist > 0)
-                        {
-                            Vector2 normal = toPlanet.normalized;
-                            position = planet.position + normal * edge;
-
-                            float vel = Vector2.Dot(velocity, normal);
-                            if (vel > 0)
-                            {
-                                velocity -= vel * normal;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (state == PlayerState.Leap)
-                        {
-                            state = PlayerState.Leap;
-                        }
-                        else
-                        {
-                            if (dist > 0)
-                            {
-                                Vector2 normal = toPlanet.normalized;
-                                float vel = Vector2.Dot(velocity, normal);
-                                state = vel > 0 ? PlayerState.Jump : PlayerState.Fall;
-                            }
-                        }
-                    }
-                }
+                UpdateGroundedStates(planet, dt);
                 break;
 
             case PlayerState.Fly:
-                {
-                    position += velocity;
-                    transform.position = new Vector3(position.x, position.y, 0);
-
-                    Vector2 toPlanet = planet.position - position;
-                    float dist = toPlanet.magnitude;
-                    float edge = planet.radius + _data.PLAYER_RADIUS;
-
-                    toPlanet = position - planet.position;
-                    dist = toPlanet.magnitude;
-
-                    if (dist < edge + _data.PLAYER_ON_GROUND_THRESHOLD)
-                    {
-                        state = PlayerState.Idle;
-                        onGround = true;
-                        velocity = Vector2.zero;
-                    }
-                }
+                UpdateFlyState(planet);
                 break;
         }
 
-        // Update the GameObject's rotation to match the calculated rotation
+        // Update transform
+        transform.position = new Vector3(position.x, position.y, 0);
         transform.rotation = Quaternion.Euler(0, 0, rotation);
     }
 
-    public void SetAnimation(PlayerState newState)
+    private void UpdateGroundedStates(Planet planet, float dt)
     {
-        animations[(int)newState].elapsed = 0;
+        // Calculate orientation relative to planet
+        Vector2 toPlanet = planet.position - position;
+        rotation = Mathf.Atan2(-toPlanet.x, toPlanet.y) * Mathf.Rad2Deg;
+
+        float dist = toPlanet.magnitude;
+        float edge = planet.radius + _data.PLAYER_RADIUS;
+
+        // Apply gravity
+        if (dist > edge)
+        {
+            Vector2 normal = toPlanet.normalized;
+            velocity += dt * planet.gravity * normal;
+        }
+
+        // Update position
+        position += velocity * dt;
+
+        // Ground collision check
+        toPlanet = position - planet.position;
+        dist = toPlanet.magnitude;
+
+        if (dist < edge + _data.PLAYER_ON_GROUND_THRESHOLD)
+        {
+            HandleGroundCollision(planet, edge, toPlanet, dist);
+        }
+        else
+        {
+            onGround = false;
+        }
+
+        // Apply friction
+        ApplyFriction(planet, dist, dt);
+
+        // Update state based on velocity
+        if (onGround)
+        {
+            UpdateGroundedState();
+        }
+        else if (state != PlayerState.Leap)
+        {
+            UpdateAirborneState(toPlanet);
+        }
+    }
+
+    private void UpdateFlyState(Planet planet)
+    {
+        position += velocity * Time.deltaTime;
+
+        Vector2 toPlanet = position - planet.position;
+        float dist = toPlanet.magnitude;
+        float edge = planet.radius + _data.PLAYER_RADIUS;
+
+        if (dist < edge + _data.PLAYER_ON_GROUND_THRESHOLD)
+        {
+            state = PlayerState.Idle;
+            onGround = true;
+            velocity = Vector2.zero;
+        }
+    }
+
+    private void HandleGroundCollision(Planet planet, float edge, Vector2 toPlanet, float dist)
+    {
+        Vector2 normal = toPlanet / dist;
+        position = planet.position + normal * edge;
+        lastNormal = normal;
+
+        float vel = Vector2.Dot(velocity, normal);
+        if (vel < 0)
+        {
+            velocity -= vel * normal;
+        }
+
+        onGround = true;
+    }
+
+    private void ApplyFriction(Planet planet, float dist, float dt)
+    {
+        float t = Mathf.Clamp01((dist - planet.radius) / planet.radius);
+        float friction = Mathf.Lerp(
+            onGround ? _data.PLAYER_FRICTION_GROUND : _data.PLAYER_FRICTION_AIR,
+            1,
+            t
+        );
+
+        velocity *= 1 / (1 + friction * dt);
+    }
+
+    private void UpdateGroundedState()
+    {
+        float mag = velocity.magnitude;
+
+        if (mag < _data.PLAYER_IDLE_VEL_THRESHOLD)
+        {
+            SetState(PlayerState.Idle);
+        }
+        else if (mag > _data.PLAYER_RUN_VEL_THRESHOLD)
+        {
+            SetState(sprinting && charge >= 1 ? PlayerState.Sprint : PlayerState.Run);
+        }
+        else
+        {
+            SetState(PlayerState.Walk);
+        }
+
+        UpdateCharge(mag);
+    }
+
+    private void UpdateCharge(float velocityMagnitude)
+    {
+        float chargeChange = 0;
+        if (velocityMagnitude > _data.PLAYER_CHARGE_VEL_THRESHOLD)
+        {
+            chargeChange = _data.PLAYER_CHARGE_RATE * Time.deltaTime;
+        }
+        else if (charge < 1)
+        {
+            chargeChange = -_data.PLAYER_DISCHARGE_RATE * Time.deltaTime;
+        }
+
+        charge = Mathf.Clamp(charge + chargeChange, 0, 1);
+    }
+
+    private void UpdateAirborneState(Vector2 toPlanet)
+    {
+        if (toPlanet.magnitude > 0)
+        {
+            Vector2 normal = toPlanet.normalized;
+            float vel = Vector2.Dot(velocity, normal);
+            SetState(vel > 0 ? PlayerState.Jump : PlayerState.Fall);
+        }
+    }
+
+    private void UpdateVisuals()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = facing < 0;
+        }
+    }
+
+    private void EnterLeapState()
+    {
+        SetState(PlayerState.Leap);
+        charge -= 1;
+    }
+
+    private void EnterFlyState(Planet planet)
+    {
+        SetState(PlayerState.Fly);
+        onGround = false;
+        Vector2 toPlanet = position - planet.position;
+        direction = toPlanet.normalized;
+        charge -= 1;
+    }
+
+    private void ApplyMovement(Planet planet, float x, bool jumped, float speed, float height, float dt)
+    {
+        Vector2 toPlanet = position - planet.position;
+        Vector2 normal = toPlanet.normalized;
+
+        if (x != 0)
+        {
+            Vector2 moveDir = x > 0 ? new Vector2(normal.y, -normal.x) : new Vector2(-normal.y, normal.x);
+            velocity += moveDir * speed * dt;
+        }
+
+        if (jumped)
+        {
+            velocity += normal * height;
+        }
+    }
+
+    public void SetState(PlayerState newState)
+    {
+        if (state == newState) return;
+
         state = newState;
+        animations[(int)newState].elapsed = 0;
         currentAnimation = animations[(int)newState];
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!showDebugGizmos) return;
+
+        // Draw velocity vector
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, transform.position + (Vector3)velocity);
+
+        // Draw ground normal
+        if (onGround)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(transform.position, transform.position + (Vector3)lastNormal);
+        }
+
+        // Draw player radius
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, _data.PLAYER_RADIUS);
     }
 }

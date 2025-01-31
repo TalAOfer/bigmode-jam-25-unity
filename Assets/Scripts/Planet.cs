@@ -9,6 +9,7 @@ public class Planet : MonoBehaviour
         public uint type;
         public float rotation;
         public Vector2 position;
+        public Transform decorationTransform; // Reference to the actual GameObject
     }
 
     [System.Serializable]
@@ -20,8 +21,10 @@ public class Planet : MonoBehaviour
         public float radius;
         public float rotation;
         public Vector2 position;
+        public Transform cloudTransform; // Reference to the actual GameObject
     }
 
+    [Header("Planet Properties")]
     public string planetName;
     public Vector2 position;
     public float angle;
@@ -31,6 +34,7 @@ public class Planet : MonoBehaviour
     public float gravity;
     public Color32[] palette = new Color32[5];
 
+    [Header("Visual Elements")]
     public PlanetCloud[] clouds = new PlanetCloud[24];
     public PlanetDecoration[] decorationsFg = new PlanetDecoration[48];
     public PlanetDecoration[] decorationsBg = new PlanetDecoration[64];
@@ -42,9 +46,15 @@ public class Planet : MonoBehaviour
     public bool completed;
     public Planet orbits;
 
-    private const float DEG2RAD = Mathf.Deg2Rad;
-    private const float RAD2DEG = Mathf.Rad2Deg;
-    private const float PI = Mathf.PI;
+    private readonly float DEG2RAD = Mathf.Deg2Rad;
+    private readonly float RAD2DEG = Mathf.Rad2Deg;
+    private readonly float PI = Mathf.PI;
+
+    private void Awake()
+    {
+        // Initialize position
+        transform.position = new Vector3(position.x, position.y, 0);
+    }
 
     private float RandomFloat(float min, float max)
     {
@@ -66,6 +76,9 @@ public class Planet : MonoBehaviour
         planet.orbit = 0;
         planet.orbits = null;
 
+        // Set initial position
+        planet.position = planetObj.transform.position;
+
         planets.Add(planet);
         return planet;
     }
@@ -74,15 +87,18 @@ public class Planet : MonoBehaviour
     {
         orbiter.orbit = distance;
         orbiter.orbits = this;
-
         orbiter.angle = offset;
 
+        // Unity-adjusted orbital speed calculation
         orbiter.speed = Mathf.Sqrt(orbiter.radius / orbiter.orbit) * 10f;
 
+        // Calculate initial position (Unity coordinate system)
         orbiter.position = new Vector2(
             position.x + Mathf.Sin(orbiter.angle * DEG2RAD) * orbiter.orbit,
             position.y + Mathf.Cos(orbiter.angle * DEG2RAD) * orbiter.orbit
         );
+
+        orbiter.transform.position = new Vector3(orbiter.position.x, orbiter.position.y, 0);
     }
 
     public void Decorate(uint[] fgTypes, uint[] bgTypes)
@@ -96,77 +112,89 @@ public class Planet : MonoBehaviour
         decorationsFgCount = Random.Range(MIN_DECORATIONS, MAX_DECORATIONS + 1);
         decorationsBgCount = decorationsFgCount + 16;
 
+        // Create foreground decorations
         for (int i = 0; i < decorationsFgCount; i++)
         {
-            int idx = Random.Range(0, fgTypes.Length);
-            uint type = fgTypes[idx];
-            float angle = RandomFloat(0, 2 * PI);
-            float offset = RandomFloat(16, 80);
-
-            float x = (radius - offset) * Mathf.Cos(angle);
-            float y = (radius - offset) * Mathf.Sin(angle);
-
-            float dx = -x;
-            float dy = -y;
-
-            float rotation = Mathf.Atan2(-dx, dy) * RAD2DEG;
-
-            decorationsFg[i] = new PlanetDecoration
-            {
-                type = type,
-                rotation = rotation,
-                position = new Vector2(x, y)
-            };
+            CreateDecoration(i, fgTypes, true);
         }
 
+        // Create background decorations
         for (int i = 0; i < decorationsBgCount; i++)
         {
-            int idx = Random.Range(0, bgTypes.Length);
-            uint type = bgTypes[idx];
-            float angle = RandomFloat(0, 2 * PI);
-            float offset = RandomFloat(4, 16);
-
-            float x = (radius - offset) * Mathf.Cos(angle);
-            float y = (radius - offset) * Mathf.Sin(angle);
-
-            float dx = -x;
-            float dy = -y;
-
-            float rotation = Mathf.Atan2(-dx, dy) * RAD2DEG;
-
-            decorationsBg[i] = new PlanetDecoration
-            {
-                type = type,
-                rotation = rotation,
-                position = new Vector2(x, y)
-            };
+            CreateDecoration(i, bgTypes, false);
         }
 
+        // Create clouds
         for (int i = 0; i < cloudsCount; i++)
         {
-            uint type = (uint)Random.Range(0, 3);
-            float speed = RandomFloat(0.01f, 0.06f);
-            float angle = RandomFloat(0, 2 * PI);
-            float cloudRadius = radius + RandomFloat(96, 256);
-
-            float x = position.x + cloudRadius * Mathf.Cos(angle);
-            float y = position.y + cloudRadius * Mathf.Sin(angle);
-
-            float dx = position.x - x;
-            float dy = position.y - y;
-
-            float rotation = Mathf.Atan2(-dx, dy) * RAD2DEG;
-
-            clouds[i] = new PlanetCloud
-            {
-                type = type,
-                angle = angle,
-                speed = speed,
-                radius = cloudRadius,
-                rotation = rotation,
-                position = new Vector2(x, y)
-            };
+            CreateCloud(i);
         }
+    }
+
+    private void CreateDecoration(int index, uint[] types, bool isForeground)
+    {
+        int idx = Random.Range(0, types.Length);
+        uint type = types[idx];
+        float angle = RandomFloat(0, 2 * PI);
+        float offset = isForeground ? RandomFloat(16, 80) : RandomFloat(4, 16);
+
+        // Calculate position in Unity's coordinate system
+        float x = (radius - offset) * Mathf.Cos(angle);
+        float y = (radius - offset) * Mathf.Sin(angle);
+
+        Vector2 toCenter = new Vector2(-x, -y);
+        float rotation = Mathf.Atan2(toCenter.y, toCenter.x) * RAD2DEG;
+
+        // Create decoration GameObject
+        GameObject decorObj = new GameObject($"{(isForeground ? "FG" : "BG")}_Decoration_{index}");
+        decorObj.transform.SetParent(transform);
+        decorObj.transform.localPosition = new Vector3(x, y, isForeground ? -1 : 1); // Z-ordering
+        decorObj.transform.localRotation = Quaternion.Euler(0, 0, rotation);
+
+        var decoration = new PlanetDecoration
+        {
+            type = type,
+            rotation = rotation,
+            position = new Vector2(x, y),
+            decorationTransform = decorObj.transform
+        };
+
+        if (isForeground)
+            decorationsFg[index] = decoration;
+        else
+            decorationsBg[index] = decoration;
+    }
+
+    private void CreateCloud(int index)
+    {
+        uint type = (uint)Random.Range(0, 3);
+        float speed = RandomFloat(0.01f, 0.06f);
+        float angle = RandomFloat(0, 2 * PI);
+        float cloudRadius = radius + RandomFloat(96, 256);
+
+        // Calculate position in Unity's coordinate system
+        float x = position.x + cloudRadius * Mathf.Cos(angle);
+        float y = position.y + cloudRadius * Mathf.Sin(angle);
+
+        Vector2 toCenter = new Vector2(position.x - x, position.y - y);
+        float rotation = Mathf.Atan2(toCenter.y, toCenter.x) * RAD2DEG;
+
+        // Create cloud GameObject
+        GameObject cloudObj = new GameObject($"Cloud_{index}");
+        cloudObj.transform.SetParent(transform);
+        cloudObj.transform.position = new Vector3(x, y, -2); // Clouds in front
+        cloudObj.transform.rotation = Quaternion.Euler(0, 0, rotation);
+
+        clouds[index] = new PlanetCloud
+        {
+            type = type,
+            angle = angle,
+            speed = speed,
+            radius = cloudRadius,
+            rotation = rotation,
+            position = new Vector2(x, y),
+            cloudTransform = cloudObj.transform
+        };
     }
 
     public void UpdatePlanet(float dt)
@@ -175,6 +203,7 @@ public class Planet : MonoBehaviour
         {
             angle += speed * dt;
 
+            // Update position in Unity's coordinate system
             position = new Vector2(
                 orbits.position.x + Mathf.Sin(angle * DEG2RAD) * orbit,
                 orbits.position.y + Mathf.Cos(angle * DEG2RAD) * orbit
@@ -183,21 +212,42 @@ public class Planet : MonoBehaviour
             transform.position = new Vector3(position.x, position.y, 0);
         }
 
+        // Update clouds with Unity transformations
         for (int i = 0; i < cloudsCount; i++)
         {
             var cloud = clouds[i];
-            float speed = cloud.speed;
-            float angle = cloud.angle + speed * dt;
+            cloud.angle += cloud.speed * dt;
 
-            float x = position.x + cloud.radius * Mathf.Cos(angle);
-            float y = position.y + cloud.radius * Mathf.Sin(angle);
+            float x = position.x + cloud.radius * Mathf.Cos(cloud.angle);
+            float y = position.y + cloud.radius * Mathf.Sin(cloud.angle);
 
-            float dx = position.x - x;
-            float dy = position.y - y;
+            Vector2 toCenter = new Vector2(position.x - x, position.y - y);
+            cloud.rotation = Mathf.Atan2(toCenter.y, toCenter.x) * RAD2DEG;
 
-            clouds[i].position = new Vector2(x, y);
-            clouds[i].angle = angle;
-            clouds[i].rotation = Mathf.Atan2(-dx, dy) * RAD2DEG;
+            cloud.position = new Vector2(x, y);
+
+            // Update cloud transform
+            if (cloud.cloudTransform != null)
+            {
+                cloud.cloudTransform.position = new Vector3(x, y, -2);
+                cloud.cloudTransform.rotation = Quaternion.Euler(0, 0, cloud.rotation);
+            }
+
+            clouds[i] = cloud;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        // Draw planet radius
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, radius);
+
+        // Draw orbit if applicable
+        if (orbits != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(orbits.transform.position, orbit);
         }
     }
 }
