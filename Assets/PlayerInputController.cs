@@ -10,7 +10,7 @@ public class PlayerInputController : MonoBehaviour
     public void UseDashInput() => SprintInput = false;
     public bool JumpInput { get; private set; }
     public void UseJumpInput() => JumpInput = false;
-
+ 
     public void HandleMoveInput(InputAction.CallbackContext ctx)
     {
         RawMovementInput = ctx.ReadValue<Vector2>();

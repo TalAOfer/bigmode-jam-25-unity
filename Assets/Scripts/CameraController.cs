@@ -49,7 +49,6 @@ public class CameraController : MonoBehaviour
         Normal,
         Sprint,
         Fly,
-        Leap
     }
     
     private void LateUpdate()
@@ -72,17 +71,16 @@ public class CameraController : MonoBehaviour
         {
             CameraState.Sprint => sprintZoom,
             CameraState.Fly => flyZoom,
-            CameraState.Leap => normalZoom, // or a specific leap zoom if you want
             _ => normalZoom
         };
 
         currentZoom = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * 10f);
 
         // Handle rotation based on state
-        if (currentState != CameraState.Leap && player.planetIdx >= 0 &&
-            player.planetIdx < GameManager.Instance.planets.Count)
+        if (player.planetIdx >= 0 &&
+            player.planetIdx < GameManager.Instance.galaxyManager.planets.Count)
         {
-            Planet currentPlanet = GameManager.Instance.planets[player.planetIdx];
+            Planet currentPlanet = GameManager.Instance.galaxyManager.planets[player.planetIdx];
             Vector2 toPlanet = currentPlanet.position - (Vector2)player.transform.position;
 
             float targetRotation = Mathf.Atan2(-toPlanet.x, toPlanet.y) * Mathf.Rad2Deg + 180f;

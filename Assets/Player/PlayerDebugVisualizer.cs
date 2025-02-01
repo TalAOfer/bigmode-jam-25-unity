@@ -21,7 +21,7 @@ public class PlayerDebugVisualizer : MonoBehaviour
     [SerializeField] private float velocityLineScale = 0.5f; // Scale factor for velocity vector
 
     private Player player;
-    private Planet currentPlanet => GameManager.Instance?.planets[player.planetIdx];
+    private Planet currentPlanet => GameManager.Instance?.galaxyManager.planets[player.planetIdx];
 
     private void Awake()
     {
@@ -66,8 +66,6 @@ public class PlayerDebugVisualizer : MonoBehaviour
 
     private void DrawPlanetInteraction()
     {
-        Vector2 toPlanet = player.ToPlanet;
-        float dist = toPlanet.magnitude;
         float groundThreshold = currentPlanet.radius + _data.PLAYER_ON_GROUND_THRESHOLD;
 
         // Draw ground detection threshold

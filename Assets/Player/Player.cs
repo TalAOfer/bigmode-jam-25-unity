@@ -63,21 +63,15 @@ public class Player : MonoBehaviour
         PlayerStateMachine.InitializeState(IdleState);
     }
 
-    private void Update()
+    public void UpdatePlayer()
     {
-        if (GameManager.Instance == null || planetIdx >= GameManager.Instance.planets.Count) return;
+        if (GameManager.Instance == null || planetIdx >= GameManager.Instance.galaxyManager.planets.Count) return;
 
-        currentPlanet = GameManager.Instance.planets[planetIdx];
-        //ProcessInput(currentPlanet, _input.NormInputX, _input.NormInputY, _input.SprintInput, Time.deltaTime);
+        currentPlanet = GameManager.Instance.galaxyManager.planets[planetIdx];
 
         PlayerStateMachine?.CurrentState?.UpdateState();
-        
-        UpdatePlayer();
-    }
 
-    private void UpdatePlayer()
-    {
-        transform.position += (Vector3) velocity * Time.deltaTime;
+        transform.position += (Vector3)velocity * Time.deltaTime;
         transform.rotation = Quaternion.Euler(0, 0, rotation);
     }
 
