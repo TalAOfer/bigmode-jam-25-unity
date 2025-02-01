@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 public class GalaxyManager : MonoBehaviour
 {
-    public static GalaxyManager Instance;
-
     [Header("Solar System Configuration")]
-    [SerializeField] private GameObject planetPrefab;
+    [SerializeField] private GameObject defaultPlanetPrefab;
 
     [Header("Planet Visuals")]
     [SerializeField] private List<Sprite> cloudSprites;
@@ -53,7 +51,11 @@ public class GalaxyManager : MonoBehaviour
 
     private Planet CreatePlanet(CelestialBodyBlueprint blueprint)
     {
-        GameObject planetObj = Instantiate(planetPrefab, planetsContainer);
+        GameObject prefab = (blueprint.useDefaultPrefab || blueprint.prefab == null)
+            ? defaultPlanetPrefab :
+            blueprint.prefab;
+
+        GameObject planetObj = Instantiate(prefab, planetsContainer);
         planetObj.name = blueprint.name;
 
         Planet planet = planetObj.GetComponent<Planet>();
@@ -80,6 +82,8 @@ public class GalaxyManager : MonoBehaviour
         // Set initial transform values
         planet.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         planet.transform.localScale = Vector3.one * (blueprint.radius * 2);
+
+        planet.RescalePremadeDecorations();
     }
 
     private void DecoratePlanet(Planet planet)

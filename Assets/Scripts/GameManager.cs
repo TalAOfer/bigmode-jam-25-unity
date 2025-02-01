@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private GameObject mainMenu;
     public GalaxyManager galaxyManager;
+    public AudioController audioController;
 
     [Header("Game Settings")]
     [SerializeField] private float worldBoundary = 16000f;
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour
         skyColor = skyColorMax;
         galaxyManager.Initialize();
         InitializePlayer();
+        audioController.PlayOneShot("Music/Music");
         isInitialized = true;
     }
 

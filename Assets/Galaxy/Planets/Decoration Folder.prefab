@@ -48,3 +48,5 @@ MonoBehaviour:
   baseDecorationHeight: 0.5
   layerName: 0
   orderInLayer: 0
+  decorationPrefab: {fileID: 4987305533422931084, guid: 91c3e89c964fbb642abb40369a06a998, type: 3}
+  decorationSprite: {fileID: 21300000, guid: 042d93cbd3851ff4185b98b9000aa12b, type: 3}

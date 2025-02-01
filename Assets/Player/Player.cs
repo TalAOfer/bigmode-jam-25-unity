@@ -60,6 +60,8 @@ public class Player : MonoBehaviour
         AirborneState = new PlayerAirborneState(this, PlayerStateMachine, "Airborne");
         FlyState = new PlayerFlyState(this, PlayerStateMachine, "Fly");
 
+        GameManager.Instance.audioController.PlayOneShot("Player/Movement");
+
         PlayerStateMachine.InitializeState(IdleState);
     }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Planet : MonoBehaviour
 {
@@ -54,6 +55,19 @@ public class Planet : MonoBehaviour
     {
         // Initialize position
         transform.position = new Vector3(position.x, position.y, 0);
+    }
+
+    public void RescalePremadeDecorations()
+    {
+        List<DecorationManager> decorationManagers = GetComponentsInChildren<DecorationManager>().ToList();
+
+        if (decorationManagers.Count > 0 )
+        {
+            foreach ( DecorationManager manager in decorationManagers)
+            {
+                manager.RescaleDecorations();
+            }
+        }
     }
 
     private float RandomFloat(float min, float max)

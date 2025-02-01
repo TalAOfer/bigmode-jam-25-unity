@@ -505,6 +505,7 @@ MonoBehaviour:
   mainCamera: {fileID: 519420031}
   mainMenu: {fileID: 488723820}
   galaxyManager: {fileID: 834586666}
+  audioController: {fileID: 1879406245}
   worldBoundary: 16000
   colorLerpSpeed: 0.05
   skyColorMin: 0
@@ -832,6 +833,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -901,7 +903,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.13449252, g: 0.0007564989, b: 0.16037738, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -957,6 +959,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1085,21 +1101,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14e616f261676f94daa7eb0cced486dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  planetPrefab: {fileID: 4773227347613399592, guid: 50da80a30716f1943a4ce032f508d343, type: 3}
+  defaultPlanetPrefab: {fileID: 4773227347613399592, guid: 50da80a30716f1943a4ce032f508d343, type: 3}
   cloudSprites: []
   foregroundDecorations: []
   backgroundDecorations: []
   sunBlueprint:
     name: Sun
-    useDefaultPrefab: 1
-    prefab: {fileID: 0}
+    useDefaultPrefab: 0
+    prefab: {fileID: 4773227347613399592, guid: aceb490bb6ed76841887977e4452c7fb, type: 3}
     radius: 16
     gravity: 32
     palette: []
     planets:
     - name: Planet 001
       useDefaultPrefab: 1
-      prefab: {fileID: 0}
+      prefab: {fileID: 4773227347613399592, guid: aceb490bb6ed76841887977e4452c7fb, type: 3}
       radius: 24
       gravity: 32
       palette: []
@@ -1510,6 +1526,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1879406244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1879406246}
+  - component: {fileID: 1879406245}
+  m_Layer: 0
+  m_Name: Audio Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1879406245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879406244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1faddd454aa8f641b9aabb7d79100af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  masterSlider: {fileID: 0}
+--- !u!4 &1879406246
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879406244}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2049806069
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,5 +1717,6 @@ SceneRoots:
   - {fileID: 152728850}
   - {fileID: 834586665}
   - {fileID: 95512580}
+  - {fileID: 1879406246}
   - {fileID: 1204236214}
   - {fileID: 23482039}

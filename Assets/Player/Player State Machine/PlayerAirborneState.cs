@@ -9,6 +9,8 @@ public class PlayerAirborneState : PlayerBaseState
     public override void OnEnterState()
     {
         base.OnEnterState();
+        GameManager.Instance.audioController.AlterPlayerStateSoundParameter("None");
+        GameManager.Instance.audioController.PlayOneShot("Player/Jump");
 
         // Apply jump force in the correct "up" direction
         player.velocity += (Vector2)player.transform.up * player.Data.PLAYER_JUMP_HEIGHT;
@@ -45,6 +47,7 @@ public class PlayerAirborneState : PlayerBaseState
     public override void OnExitState()
     {
         base.OnExitState();
+        GameManager.Instance.audioController.PlayOneShot("Player/Land");
     }
 
     private void UpdateAnimatorAccordingToVerticalVelocity()
