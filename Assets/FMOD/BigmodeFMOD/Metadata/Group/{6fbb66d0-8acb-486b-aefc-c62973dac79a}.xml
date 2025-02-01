@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="MixerGroup" id="{6fbb66d0-8acb-486b-aefc-c62973dac79a}">
+		<property name="name">
+			<value>BGM</value>
+		</property>
+		<relationship name="automators">
+			<destination>{db9b8860-d8a4-4c8a-91a5-fc5f28aab0af}</destination>
+		</relationship>
+		<relationship name="effectChain">
+			<destination>{fe1f64c4-de1e-42d9-8442-e341b3074d6d}</destination>
+		</relationship>
+		<relationship name="panner">
+			<destination>{c88289a1-a53b-4536-b2fe-3ff45ebb0975}</destination>
+		</relationship>
+		<relationship name="output">
+			<destination>{a42e5c7e-5d23-44b0-88de-a885c60265ae}</destination>
+		</relationship>
+	</object>
+	<object class="Automator" id="{db9b8860-d8a4-4c8a-91a5-fc5f28aab0af}">
+		<property name="nameOfPropertyBeingAutomated">
+			<value>volume</value>
+		</property>
+		<relationship name="automationCurves">
+			<destination>{61d3aaf9-4ff9-4dac-938e-c53ad1dab27a}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusEffectChain" id="{fe1f64c4-de1e-42d9-8442-e341b3074d6d}">
+		<relationship name="effects">
+			<destination>{958b0a6b-aa8d-4f80-b924-87476e99971e}</destination>
+			<destination>{fd221aa0-2b4a-403a-927f-32d8f7d09f22}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusPanner" id="{c88289a1-a53b-4536-b2fe-3ff45ebb0975}" />
+	<object class="AutomationCurve" id="{61d3aaf9-4ff9-4dac-938e-c53ad1dab27a}">
+		<relationship name="parameter">
+			<destination>{d3d7bca2-8a6c-4d4c-a816-7b15082b399e}</destination>
+		</relationship>
+		<relationship name="automationPoints">
+			<destination>{0c2c5e89-f45e-47ce-9d5b-214ee486990f}</destination>
+			<destination>{9884f92c-8ac0-4573-92b0-a180f11cddec}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusFader" id="{958b0a6b-aa8d-4f80-b924-87476e99971e}" />
+	<object class="CompressorEffect" id="{fd221aa0-2b4a-403a-927f-32d8f7d09f22}">
+		<property name="threshold">
+			<value>-36</value>
+		</property>
+		<property name="attackTime">
+			<value>34</value>
+		</property>
+		<property name="releaseTime">
+			<value>960</value>
+		</property>
+		<relationship name="sidechains">
+			<destination>{0d9c8b9d-3156-4f98-9051-0d76983bb44d}</destination>
+		</relationship>
+	</object>
+	<object class="AutomationPoint" id="{0c2c5e89-f45e-47ce-9d5b-214ee486990f}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="value">
+			<value>-80</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{9884f92c-8ac0-4573-92b0-a180f11cddec}">
+		<property name="position">
+			<value>0.99293785310734461</value>
+		</property>
+		<property name="value">
+			<value>3.81469727e-06</value>
+		</property>
+	</object>
+</objects>

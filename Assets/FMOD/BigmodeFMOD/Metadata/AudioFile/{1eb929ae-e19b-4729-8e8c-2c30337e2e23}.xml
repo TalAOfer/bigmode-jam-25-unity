@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{1eb929ae-e19b-4729-8e8c-2c30337e2e23}">
+		<property name="assetPath">
+			<value>RUN  FMOD.ogg</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.0023356009070294</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b7491ad0-f3b3-4b7e-b417-51d246b05db3}</destination>
+		</relationship>
+	</object>
+</objects>

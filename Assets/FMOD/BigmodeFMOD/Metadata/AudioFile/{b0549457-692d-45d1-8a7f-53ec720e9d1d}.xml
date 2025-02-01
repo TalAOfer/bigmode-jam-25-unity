@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{b0549457-692d-45d1-8a7f-53ec720e9d1d}">
+		<property name="assetPath">
+			<value>BGM- Just another sunset CLOCK.ogg</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>96</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b7491ad0-f3b3-4b7e-b417-51d246b05db3}</destination>
+		</relationship>
+	</object>
+</objects>

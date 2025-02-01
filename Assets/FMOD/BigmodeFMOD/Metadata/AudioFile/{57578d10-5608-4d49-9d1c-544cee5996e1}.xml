@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{57578d10-5608-4d49-9d1c-544cee5996e1}">
+		<property name="assetPath">
+			<value>NewER Jump 1.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.75498866213151927</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b7491ad0-f3b3-4b7e-b417-51d246b05db3}</destination>
+		</relationship>
+	</object>
+</objects>

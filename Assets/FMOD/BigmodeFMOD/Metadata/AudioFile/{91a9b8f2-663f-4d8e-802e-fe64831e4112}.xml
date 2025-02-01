@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{91a9b8f2-663f-4d8e-802e-fe64831e4112}">
+		<property name="assetPath">
+			<value>BGM- But now its gone PIANO.ogg</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>120</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b7491ad0-f3b3-4b7e-b417-51d246b05db3}</destination>
+		</relationship>
+	</object>
+</objects>
