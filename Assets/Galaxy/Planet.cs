@@ -31,6 +31,7 @@ public class Planet : MonoBehaviour
     public float angle;
     public float speed;
     public float orbit;
+    public bool shouldOrbit;
     public float radius;
     public float gravity;
     public Color32[] palette = new Color32[5];
@@ -213,7 +214,7 @@ public class Planet : MonoBehaviour
 
     public void UpdatePlanet(float dt)
     {
-        if (orbits != null)
+        if (shouldOrbit && orbits != null)
         {
             angle += speed * dt;
 

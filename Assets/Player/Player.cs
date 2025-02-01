@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
     public PlayerInputController Input => _input;
     [SerializeField] private SpriteRenderer spriteRenderer;
     public Animator Anim {  get; private set; }
-
     [ShowInInspector]public bool View_IsGrounded => IsGrounded();
     [ShowInInspector] public bool View_IsTransitioningState => PlayerStateMachine != null
         && PlayerStateMachine.CurrentState != null
@@ -75,6 +74,7 @@ public class Player : MonoBehaviour
 
         transform.position += (Vector3)velocity * Time.deltaTime;
         transform.rotation = Quaternion.Euler(0, 0, rotation);
+        
     }
 
     public void GetClosestPlanet(List<Planet> planets)

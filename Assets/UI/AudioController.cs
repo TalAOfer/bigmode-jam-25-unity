@@ -8,7 +8,7 @@ public class AudioController : MonoBehaviour
 
     public void Start()
     {
-        //InitializeVolume();
+        InitializeVolume();
     }
 
     private void InitializeVolume()
@@ -25,7 +25,7 @@ public class AudioController : MonoBehaviour
 
     public void OnMasterSliderChanged(float sliderValue)
     {
-        float value = sliderValue * 10;
+        float value = sliderValue;
         FMODUnity.RuntimeManager.StudioSystem.setParameterByName("Volume", value);
         PlayerPrefs.Save();
     }

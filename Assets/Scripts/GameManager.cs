@@ -110,23 +110,23 @@ public class GameManager : MonoBehaviour
 
         if (player.transform.position.x < -worldBoundary)
         {
-            newPosition.x = worldBoundary - 1000f;
+            newPosition.x = worldBoundary - 3f;
             positionChanged = true;
         }
         else if (player.transform.position.x > worldBoundary)
         {
-            newPosition.x = -worldBoundary + 1000f;
+            newPosition.x = -worldBoundary + 3f;
             positionChanged = true;
         }
 
         if (player.transform.position.y < -worldBoundary)
         {
-            newPosition.y = worldBoundary - 1000f;
+            newPosition.y = worldBoundary - 3f;
             positionChanged = true;
         }
         else if (player.transform.position.y > worldBoundary)
         {
-            newPosition.y = -worldBoundary + 1000f;
+            newPosition.y = -worldBoundary + 3f;
             positionChanged = true;
         }
 

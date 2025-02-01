@@ -44,9 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78069ace748d66f49a2d9f2fc36ffbde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isScatterFolder: 0
   parentPlanet: {fileID: 0}
   baseDecorationHeight: 0.5
   layerName: 0
   orderInLayer: 0
   decorationPrefab: {fileID: 4987305533422931084, guid: 91c3e89c964fbb642abb40369a06a998, type: 3}
+  scatterPrefab: {fileID: 1224539873309106850, guid: 010d93ca21fa7cd44b2532cdb2698b85, type: 3}
   decorationSprite: {fileID: 21300000, guid: 042d93cbd3851ff4185b98b9000aa12b, type: 3}

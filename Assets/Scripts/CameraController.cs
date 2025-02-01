@@ -77,7 +77,7 @@ public class CameraController : MonoBehaviour
         currentZoom = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * 10f);
 
         // Handle rotation based on state
-        if (player.planetIdx >= 0 &&
+        if (currentState != CameraState.Fly && player.planetIdx >= 0 &&
             player.planetIdx < GameManager.Instance.galaxyManager.planets.Count)
         {
             Planet currentPlanet = GameManager.Instance.galaxyManager.planets[player.planetIdx];

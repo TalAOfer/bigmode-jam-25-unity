@@ -5,6 +5,8 @@ using UnityEngine;
 public class MoonBlueprint : CelestialBodyBlueprint
 {
     [FoldoutGroup("Data")]
+    public bool shouldOrbit;
+    [FoldoutGroup("Data")]
     public float distanceFromParent = 100f;
     [FoldoutGroup("Data"), Range(0f, 360f)]
     public float rotationOffset;

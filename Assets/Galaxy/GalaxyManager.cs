@@ -37,11 +37,13 @@ public class GalaxyManager : MonoBehaviour
         {
             Planet planet = CreatePlanet(planetBlueprint);
             sun.AddToOrbit(planet, planetBlueprint.distanceFromParent, planetBlueprint.rotationOffset);
+            planet.shouldOrbit = planetBlueprint.shouldOrbit;
 
-            foreach(MoonBlueprint moonBlueprint in planetBlueprint.moons)
+            foreach (MoonBlueprint moonBlueprint in planetBlueprint.moons)
             {
                 Planet moon = CreatePlanet(moonBlueprint);
                 planet.AddToOrbit(moon, moonBlueprint.distanceFromParent, moonBlueprint.rotationOffset);
+                moon.shouldOrbit = moonBlueprint.shouldOrbit;
             }
         }
 
