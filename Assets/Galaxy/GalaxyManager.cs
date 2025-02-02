@@ -5,11 +5,6 @@ using Sirenix.OdinInspector;
 
 public class GalaxyManager : MonoBehaviour
 {
-    [Header("Solar System Configuration")]
-    [SerializeField] private GameObject defaultPlanetPrefab;
-
-    [SerializeField] private SunBlueprint sunBlueprint;
-
     [SerializeField] private Transform planetsContainer;
     public List<Planet> planets = new List<Planet>();
     private bool[] renderedPlanets = new bool[16]; // Max planets
@@ -31,8 +26,6 @@ public class GalaxyManager : MonoBehaviour
         {
             planet.Initialize();
         }
-
-        //CreateSolarSystem();
     }
 
 

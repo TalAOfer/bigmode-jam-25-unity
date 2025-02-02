@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d231c5f2cd81ff54cb26883a11b19a70
+guid: 2eec9afff65f0ea4690017896a2a09f8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1793021817022288478
-    second: Forest_Planet_0
+      213: -2444762365154000559
+    second: FlowerSocket_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 2400
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Forest_Planet_0
+      name: FlowerSocket_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 12
         y: 0
-        width: 2424
-        height: 2424
+        width: 467
+        height: 579
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e52932eb7d712e810800000000000000
-      internalID: 1793021817022288478
+      spriteID: 15180c0f495721ed0800000000000000
+      internalID: -2444762365154000559
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Forest_Planet_0: 1793021817022288478
+      FlowerSocket_0: -2444762365154000559
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

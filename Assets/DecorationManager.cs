@@ -35,7 +35,7 @@ public class DecorationManager : MonoBehaviour
         if (!isScatterFolder)
         {
             instance.name = decorationSprite.name;
-            instance.GetComponent<SpriteRenderer>().sprite = decorationSprite;
+            instance.GetComponentInChildren<SpriteRenderer>().sprite = decorationSprite;
         }
 
         Undo.RegisterCreatedObjectUndo(instance, "Spawn Prefab");

@@ -8,6 +8,7 @@ public class PlayerData : ScriptableObject
     public float PLAYER_JUMP_HEIGHT = 9f;
     public float PLAYER_FRICTION_AIR = 2f;
     public float PLAYER_ON_GROUND_THRESHOLD = 2.0f;
+    public float PLAYER_SOCKET_PADDING = 0.25f;
 
     [Title("Fly")]
     public float PLAYER_FLY_SPEED = 32f;        // Adjust as needed

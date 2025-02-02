@@ -4,7 +4,7 @@ public class Collectible : MonoBehaviour
 {
     public Transform originalParent;
     public ScatterManager manager;
-
+    public Collider2D coll;
     private void Awake()
     {
         manager = FindFirstObjectByType<ScatterManager>();
@@ -17,7 +17,7 @@ public class Collectible : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("PlayerPickup"))
         {
             manager.OnColllectibleCollected(this);
             gameObject.SetActive(false);

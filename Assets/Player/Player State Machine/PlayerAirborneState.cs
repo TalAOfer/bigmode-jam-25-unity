@@ -27,6 +27,11 @@ public class PlayerAirborneState : PlayerBaseState
         {
             ChangeState(player.IdleState);
         }
+
+        if (player.verticalVelocity >= 0 && player.CurrentFlowerSocket)
+        {
+            ChangeState(player.ConnectToSocketState);
+        }
     }
 
     private void UpdateHorizontalMovement()

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using System.Collections;
 
 public class Planet : MonoBehaviour
 {
@@ -10,7 +11,11 @@ public class Planet : MonoBehaviour
     public float gravity = 12f;
     public Planet parentPlanet;
     public Color skyboxColor;
-    
+    public Sprite indicatorSprite;
+    public bool IsVisible {  get; private set; }
+
+    public void OnBecameVisible() => IsVisible = true;
+    public void OnBecameInvisible() => IsVisible = false;
     public float radius {  get; private set; }
     public float angle { get; private set; }
     public float speed {  get; private set; }
@@ -26,6 +31,12 @@ public class Planet : MonoBehaviour
             Vector2.Distance((Vector2)transform.position, (Vector2)parentPlanet.transform.position) :
             0;
             
+    }
+
+    public IEnumerator OnPlanetComplete()
+    {
+        completed = true;
+        yield break;
     }
 
     public void RescalePremadeDecorations()

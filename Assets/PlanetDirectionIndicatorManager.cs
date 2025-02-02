@@ -8,25 +8,29 @@ public class PlanetDirectionIndicatorManager : MonoBehaviour
     private Camera mainCamera;
 
     [SerializeField] private List<PlanetDirectionIndicator> directionIndicators;
+    private bool isInitialized;
 
     private void Awake()
     {
         mainCamera = Camera.main;
 
-        for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count - 1; i++)
+        for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
         {
             directionIndicators[i].Initialize(GameManager.Instance.galaxyManager.planets[i]);
         }
+
+        isInitialized = true;
     }
 
     private void Update()
     {
+        if (!isInitialized) return;
+
         SharedIndicatorData indicatorData = GetSharedData();
 
-        for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count - 1; i++)
+        for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
         {
-            bool isPlanetVisible = GameManager.Instance.galaxyManager.IsPlanetVisible(i);
-            bool shouldShowIndicator = !isPlanetVisible;
+            bool shouldShowIndicator = !directionIndicators[i].planet.IsVisible;
             directionIndicators[i].gameObject.SetActive(shouldShowIndicator);
             if (shouldShowIndicator)
             {

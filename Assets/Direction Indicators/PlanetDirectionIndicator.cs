@@ -6,11 +6,12 @@ public class PlanetDirectionIndicator : MonoBehaviour
 {
     [ReadOnly]
     public Planet planet;
-    [SerializeField] private float addedPointingRotation = 0f;
+    [SerializeField] private float addedPointingRotation = -90f;
 
     public void Initialize(Planet planet)
     {
         this.planet = planet;
+        GetComponent<SpriteRenderer>().sprite = planet.indicatorSprite;
     }
 
     public void UpdateIndicator(SharedIndicatorData sharedData)

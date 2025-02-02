@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: d231c5f2cd81ff54cb26883a11b19a70
+guid: 18088e36e50a08542b7b8dafd02e414f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1793021817022288478
-    second: Forest_Planet_0
+      213: -7634649982826390635
+    second: Rabbit_Flying_0
+  - first:
+      213: 938604648397138300
+    second: Rabbit_Flying_1
+  - first:
+      213: 5912353395827282604
+    second: Rabbit_Flying_2
+  - first:
+      213: -7192680972119822447
+    second: Rabbit_Flying_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,12 +55,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 2400
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,23 +135,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Forest_Planet_0
+      name: Rabbit_Flying_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 2424
-        height: 2424
+        y: 256
+        width: 256
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: e52932eb7d712e810800000000000000
-      internalID: 1793021817022288478
+      spriteID: 48f57a7d124e3c64aa62fd1727fbd4da
+      internalID: 1985453709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rabbit_Flying_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6bb789d4854f40341a88f60470a062ae
+      internalID: 580618948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rabbit_Flying_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5091209b1af8d6d4da47f75a3402923f
+      internalID: -534472150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rabbit_Flying_3
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba2fb8e126557c841b48359340a8db7a
+      internalID: -544894468
       vertices: []
       indices: 
       edges: []
@@ -151,7 +226,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: a886c26b7974e1c4da053fd4242c491f
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +236,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Forest_Planet_0: 1793021817022288478
+      Rabbit_Flying_0: 1985453709
+      Rabbit_Flying_1: 580618948
+      Rabbit_Flying_2: -534472150
+      Rabbit_Flying_3: -544894468
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

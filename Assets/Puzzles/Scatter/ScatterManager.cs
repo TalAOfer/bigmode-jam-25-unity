@@ -1,10 +1,11 @@
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ScatterManager : MonoBehaviour
+public class ScatterManager : FlowerSocketSequencer
 {
     public List<Collectible> collectibles = new();
     public List<Collectible> activeCollectibles = new();
@@ -13,13 +14,36 @@ public class ScatterManager : MonoBehaviour
     [SerializeField] private Ease tweenEase;
     [SerializeField] private float tweenDelay;
 
+    private bool hasScattered;
+    private bool finished => activeCollectibles.Any();
+
     public void AssignCollectible(Collectible collectible)
     {
         collectibles.Add(collectible);
     }
 
-    [Button]
-    public void ActivateScatter()
+    public override IEnumerator StartSequence()
+    {
+        if (!hasScattered)
+        {
+            yield return ScatterSequence();
+        } 
+        
+        else
+        {
+            if (finished)
+            {
+
+            } 
+            
+            else
+            {
+
+            }
+        }
+    }
+
+    public IEnumerator ScatterSequence()
     {
         activeCollectibles = new(collectibles);
 
@@ -36,6 +60,22 @@ public class ScatterManager : MonoBehaviour
             .Append(collectible.transform.DOLocalMove(Vector3.zero, tweenTime).SetEase(tweenEase)));
             currentDelay += tweenDelay;
         }
+
+        yield return sequence.WaitForCompletion();
+
+        foreach (Collectible collectible in collectibles)
+        {
+            collectible.coll.enabled = true;
+        }
+
+        yield break;
+    }
+
+
+    [Button]
+    public void ActivateScatter()
+    {
+        StartCoroutine(StartSequence());
     } 
 
     public void OnColllectibleCollected(Collectible collectible)
@@ -46,4 +86,6 @@ public class ScatterManager : MonoBehaviour
             Debug.Log("collected all");
         }
     }
+
+    
 }

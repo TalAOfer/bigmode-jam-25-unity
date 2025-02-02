@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -14,7 +15,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float normalZoom = 2f;
     [SerializeField] private float sprintZoom = 1f;
     [SerializeField] private float flyZoom = 0.5f;
-    [SerializeField] private float rotationSpeed = 0.05f;
+
+    [SerializeField] private float landRotationSpeed = 0.025f;
+    [SerializeField] private float onPlanetRotationSpeed = 0.05f;
 
     [Header("Screen Shake")]
     [SerializeField] private Vector2 shakeOffset;
@@ -26,8 +29,28 @@ public class CameraController : MonoBehaviour
     private float currentZoom;
     private float currentRotation;
 
+    private Planet targetPlanet;
+    
     private CameraState currentState = CameraState.Normal;
-    public void SetCameraState(CameraState newState) => currentState = newState;
+    private bool isLocked;
+    public void SetCameraState(CameraState newState) 
+    {
+        if (isLocked) return;
+        currentState = newState;
+
+        if (currentState == CameraState.Land)
+        {
+            isLocked = true;
+            StartCoroutine(LandRoutine());
+        }
+    }
+
+    public IEnumerator LandRoutine()
+    {
+        yield return new WaitForSeconds(1f);
+        isLocked = false;
+        currentState = CameraState.Normal;
+    }
 
     private void Awake()
     {
@@ -48,7 +71,9 @@ public class CameraController : MonoBehaviour
     {
         Normal,
         Sprint,
+        Land,
         Fly,
+        Planet
     }
     
     private void LateUpdate()
@@ -77,9 +102,11 @@ public class CameraController : MonoBehaviour
         currentZoom = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * 10f);
 
         // Handle rotation based on state
+
         if (currentState != CameraState.Fly && player.planetIdx >= 0 &&
             player.planetIdx < GameManager.Instance.galaxyManager.planets.Count)
         {
+            float rotationSpeed = currentState == CameraState.Land ? landRotationSpeed : onPlanetRotationSpeed;
             Planet currentPlanet = GameManager.Instance.galaxyManager.planets[player.planetIdx];
             Vector2 toPlanet = (Vector2)currentPlanet.transform.position - (Vector2)player.transform.position;
 

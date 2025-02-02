@@ -9,6 +9,7 @@ public class PlayerFlyState : PlayerBaseState
     public override void OnEnterState()
     {
         base.OnEnterState();
+        player.socketCollider.enabled = false;
         GameManager.Instance.backgroundManager.GoToSpaceBG();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Jump");
         CameraController.Instance.SetCameraState(CameraController.CameraState.Fly);
@@ -17,8 +18,10 @@ public class PlayerFlyState : PlayerBaseState
     public override void OnExitState()
     {
         base.OnExitState();
+        player.socketCollider.enabled = true;
         GameManager.Instance.backgroundManager.GoToPlanetSkybox();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Land");
+        CameraController.Instance.SetCameraState(CameraController.CameraState.Land);
     }
 
     public override void UpdateState()

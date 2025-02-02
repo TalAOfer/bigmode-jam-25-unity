@@ -46,7 +46,13 @@ public class Player : MonoBehaviour
     public PlayerAirborneState AirborneState { get; private set; }
     public PlayerFlyState FlyState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
+    public PlayerConnectToSocketState ConnectToSocketState { get; private set; }
 
+    public Collider2D pickupCollider;
+    public Collider2D socketCollider;
+    public FlowerSocket CurrentFlowerSocket {  get; private set; }
+    public void OnFlowerSocketTriggerEnter(FlowerSocket socket) => CurrentFlowerSocket = socket;
+    public void OnFlowerSocketTriggerExit() => CurrentFlowerSocket = null;
 
     private void Awake()
     {
@@ -61,6 +67,7 @@ public class Player : MonoBehaviour
         JumpState = new PlayerJumpState(this, PlayerStateMachine, "Airborne");
         AirborneState = new PlayerAirborneState(this, PlayerStateMachine, "Airborne");
         FlyState = new PlayerFlyState(this, PlayerStateMachine, "Fly");
+        ConnectToSocketState = new PlayerConnectToSocketState(this, PlayerStateMachine, "Plug");
 
         GameManager.Instance.audioController.PlayOneShot("Player/Movement");
 
