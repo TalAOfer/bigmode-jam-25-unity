@@ -7,7 +7,6 @@ public class GalaxyManager : MonoBehaviour
 {
     [SerializeField] private Transform planetsContainer;
     public List<Planet> planets = new List<Planet>();
-    private bool[] renderedPlanets = new bool[16]; // Max planets
 
     [Button]
     public void PopulatePlanetList()
@@ -102,31 +101,5 @@ public class GalaxyManager : MonoBehaviour
                 planet.UpdatePlanet(deltaTime);
             }
         }
-    }
-
-    public void UpdateVisiblePlanets(Camera mainCamera, float planetVisibilityMultiplier)
-    {
-        if (mainCamera == null) return;
-
-        Vector2 cameraPos = mainCamera.transform.position;
-        float viewportHeight = 2f * mainCamera.orthographicSize;
-        float viewportWidth = viewportHeight * mainCamera.aspect;
-        float viewRadius = Mathf.Max(viewportWidth, viewportHeight) / 2f * Mathf.Sqrt(2);
-
-        for (int i = 0; i < planets.Count; i++)
-        {
-            if (planets[i] == null) continue;
-
-            Vector2 planetPos = planets[i].transform.position;
-            float dist = Vector2.Distance(planetPos, cameraPos);
-            float threshold = viewRadius + planets[i].radius;
-
-            renderedPlanets[i] = dist <= threshold;
-        }
-    }
-
-    public bool IsPlanetVisible(int index)
-    {
-        return index < renderedPlanets.Length && renderedPlanets[index];
     }
 }

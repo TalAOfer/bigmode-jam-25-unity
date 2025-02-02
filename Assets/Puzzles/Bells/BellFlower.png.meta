@@ -1,15 +1,15 @@
 fileFormatVersion: 2
-guid: b330f5aba804e464182ae38de23673ea
+guid: 8212039f8b576c9419d5bfe489f97165
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -875519027508037227
-    second: Desert_Planet_0
+      213: 3468849651551703605
+    second: BellFlower_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 2400
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Desert_Planet_0
+      name: BellFlower_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 12
         y: 0
-        width: 2424
-        height: 2424
+        width: 389
+        height: 579
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 599b94b451889d3f0800000000000000
-      internalID: -875519027508037227
+      spriteID: 5321afb1164d32030800000000000000
+      internalID: 3468849651551703605
       vertices: []
       indices: 
       edges: []
@@ -164,7 +164,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Desert_Planet_0: -875519027508037227
+      BellFlower_0: 3468849651551703605
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

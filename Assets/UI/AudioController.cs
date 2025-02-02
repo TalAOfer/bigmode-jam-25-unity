@@ -35,6 +35,11 @@ public class AudioController : MonoBehaviour
         FMODUnity.RuntimeManager.PlayOneShot("event:/" + soundName);
     }
 
+    public void PlayOneShotInPosition(string soundName, Vector3 pos)
+    {
+        FMODUnity.RuntimeManager.PlayOneShot("event:/" + soundName, pos);
+    }
+
     public void SetRunningParameter(bool value) 
     {
         int intValue = value ? 1 : 0;

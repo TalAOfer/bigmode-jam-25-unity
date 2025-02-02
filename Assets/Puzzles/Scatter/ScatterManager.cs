@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class ScatterManager : FlowerSocketSequencer
@@ -13,9 +14,14 @@ public class ScatterManager : FlowerSocketSequencer
     [SerializeField] private float tweenTime;
     [SerializeField] private Ease tweenEase;
     [SerializeField] private float tweenDelay;
+    [SerializeField] private TextMeshProUGUI countTMP;
 
     private bool hasScattered;
-    private bool finished => activeCollectibles.Any();
+    private bool finished => !activeCollectibles.Any();
+    private void Awake()
+    {
+        countTMP.gameObject.SetActive(false);
+    }
 
     public void AssignCollectible(Collectible collectible)
     {
@@ -27,24 +33,33 @@ public class ScatterManager : FlowerSocketSequencer
         if (!hasScattered)
         {
             yield return ScatterSequence();
-        } 
-        
+        }
+
         else
         {
-            if (finished)
+            if (finished && !planet.completed)
             {
+                countTMP.gameObject.SetActive(false);
+                yield return OnPlanetComplete();
+            }
 
-            } 
-            
             else
             {
-
+                yield return new WaitForSeconds(0.5f);
             }
         }
     }
 
+    public void SetCountText()
+    {
+        int max = collectibles.Count;
+        int got = collectibles.Count - activeCollectibles.Count;
+        countTMP.text = got.ToString() + "/" + max.ToString();
+    }
+
     public IEnumerator ScatterSequence()
     {
+        hasScattered = true;
         activeCollectibles = new(collectibles);
 
         Sequence sequence = DOTween.Sequence();
@@ -53,7 +68,8 @@ public class ScatterManager : FlowerSocketSequencer
         foreach (Collectible collectible in collectibles)
         {
             sequence.Insert(currentDelay, DOTween.Sequence()
-            .OnStart(() => {
+            .OnStart(() =>
+            {
                 collectible.gameObject.SetActive(true);
                 collectible.transform.SetParent(collectible.originalParent, true);
             })
@@ -62,6 +78,9 @@ public class ScatterManager : FlowerSocketSequencer
         }
 
         yield return sequence.WaitForCompletion();
+
+        SetCountText();
+        countTMP.gameObject.SetActive(true);
 
         foreach (Collectible collectible in collectibles)
         {
@@ -76,16 +95,18 @@ public class ScatterManager : FlowerSocketSequencer
     public void ActivateScatter()
     {
         StartCoroutine(StartSequence());
-    } 
+    }
 
     public void OnColllectibleCollected(Collectible collectible)
     {
         activeCollectibles.Remove(collectible);
+        SetCountText();
+
         if (activeCollectibles.Any())
         {
             Debug.Log("collected all");
         }
     }
 
-    
+
 }

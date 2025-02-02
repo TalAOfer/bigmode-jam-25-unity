@@ -12,13 +12,14 @@ public class Planet : MonoBehaviour
     public Planet parentPlanet;
     public Color skyboxColor;
     public Sprite indicatorSprite;
+    [ShowIf("shouldOrbit")]
+    public float speed;
     public bool IsVisible {  get; private set; }
 
     public void OnBecameVisible() => IsVisible = true;
     public void OnBecameInvisible() => IsVisible = false;
     public float radius {  get; private set; }
     public float angle { get; private set; }
-    public float speed {  get; private set; }
     public float orbitRadius {  get; private set; }
     [ShowInInspector, ReadOnly] public bool completed {  get; private set; }
 
@@ -36,7 +37,15 @@ public class Planet : MonoBehaviour
     public IEnumerator OnPlanetComplete()
     {
         completed = true;
-        yield break;
+        GameManager.Instance.audioController.PlayOneShot("World interaction/Puzzle Complete");
+        yield return CameraController.Instance.WatchPlanetRoutine(this);
+
+        GameManager.Instance.screenFlash.TriggerFlash();
+        GameManager.Instance.screenFlash.TriggerPuzzleComplete();
+
+        yield return new WaitForSeconds(1f);
+
+        yield return CameraController.Instance.GoBackToPlayerRoutine();
     }
 
     public void RescalePremadeDecorations()

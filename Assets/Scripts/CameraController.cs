@@ -1,3 +1,5 @@
+using DG.Tweening;
+using FMOD.Studio;
 using System.Collections;
 using UnityEngine;
 
@@ -6,7 +8,6 @@ public class CameraController : MonoBehaviour
     public static CameraController Instance;
 
     [Header("Camera Properties")]
-    [SerializeField] private Vector2 target;
     [SerializeField] private float baseZoom = 2f;
     [SerializeField] private float angle;
     [SerializeField] private float easing = 0.5f;
@@ -15,7 +16,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float normalZoom = 2f;
     [SerializeField] private float sprintZoom = 1f;
     [SerializeField] private float flyZoom = 0.5f;
+    [SerializeField] private float planetZoom = 10f;
 
+    [SerializeField] private float watchPlanetSpeed = 1f;
+    [SerializeField] private Ease watchPlanetEase = Ease.InSine;
+    [SerializeField] private float watchPlanetZoomDuration = 0.5f;
+    
     [SerializeField] private float landRotationSpeed = 0.025f;
     [SerializeField] private float onPlanetRotationSpeed = 0.05f;
 
@@ -29,20 +35,54 @@ public class CameraController : MonoBehaviour
     private float currentZoom;
     private float currentRotation;
 
-    private Planet targetPlanet;
+    private Transform target;
+
+    private bool isCutscene;
     
     private CameraState currentState = CameraState.Normal;
     private bool isLocked;
+
     public void SetCameraState(CameraState newState) 
     {
         if (isLocked) return;
-        currentState = newState;
 
-        if (currentState == CameraState.Land)
+        switch (newState)
         {
-            isLocked = true;
-            StartCoroutine(LandRoutine());
+            case CameraState.Normal:
+                target = player.transform;
+                break;
+            case CameraState.Sprint:
+                target = player.transform;
+                break;
+            case CameraState.Land:
+                //isLocked = true;
+                //StartCoroutine(LandRoutine());
+                break;
+            case CameraState.Fly:
+                target = player.transform;
+                break;
         }
+
+        currentState = newState;
+    }
+
+    public IEnumerator WatchPlanetRoutine(Planet planet)
+    {
+        isCutscene = true;
+        cam.DOOrthoSize(planetZoom, watchPlanetZoomDuration);
+        Vector3 pos = planet.transform.position;
+        pos.z = -10f;
+        yield return cam.transform.DOMove(pos, watchPlanetSpeed).SetSpeedBased().SetEase(watchPlanetEase).WaitForCompletion();
+
+    }
+
+    public IEnumerator GoBackToPlayerRoutine()
+    {
+        Vector3 pos = player.transform.position;
+        pos.z = -10f;
+        yield return cam.transform.DOMove(pos, watchPlanetSpeed).SetSpeedBased().SetEase(watchPlanetEase).WaitForCompletion();
+        yield return cam.DOOrthoSize(normalZoom, watchPlanetZoomDuration).WaitForCompletion();
+        isCutscene = false;
     }
 
     public IEnumerator LandRoutine()
@@ -73,7 +113,6 @@ public class CameraController : MonoBehaviour
         Sprint,
         Land,
         Fly,
-        Planet
     }
     
     private void LateUpdate()
@@ -82,22 +121,33 @@ public class CameraController : MonoBehaviour
         {
             UpdateBasedOnState();
         }
+
+        if (isCutscene) return;
+
         UpdateCamera();
         UpdateShake();
     }
 
     private void UpdateBasedOnState()
     {
-        // Update target to follow player
-        target = player.transform.position;
+        if (isCutscene) return;
 
-        // Set zoom based on state
-        float targetZoom = currentState switch
+        float targetZoom = 0;
+        switch (currentState)
         {
-            CameraState.Sprint => sprintZoom,
-            CameraState.Fly => flyZoom,
-            _ => normalZoom
-        };
+            case CameraState.Normal:
+                targetZoom = normalZoom;
+                break;
+            case CameraState.Sprint:
+                targetZoom = sprintZoom;
+                break;
+            case CameraState.Land:
+                targetZoom = normalZoom;
+                break;
+            case CameraState.Fly:
+                targetZoom = flyZoom;
+                break;
+        }
 
         currentZoom = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * 10f);
 
@@ -120,7 +170,7 @@ public class CameraController : MonoBehaviour
     {
         // Update position with lerp
         Vector3 currentPosition = cam.transform.position;
-        Vector3 targetPosition = new Vector3(target.x, target.y, currentPosition.z);
+        Vector3 targetPosition = new Vector3(target.transform.position.x, target.transform.position.y, currentPosition.z);
 
         // Apply easing based on state
         float currentEasing = currentState == CameraState.Fly ?
@@ -154,7 +204,6 @@ public class CameraController : MonoBehaviour
     }
 
     // Public methods
-    public void SetTarget(Vector2 newTarget) => target = newTarget;
     public void SetZoom(float newZoom) => currentZoom = Mathf.Max(0.1f, newZoom);
     public void SetAngle(float newAngle) => currentRotation = newAngle;
 

@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
 
     [Header("Game Settings")]
     [SerializeField] private float worldBoundary = 250f;
-    [SerializeField] private float planetVisibilityMultiplier = 1.5f;
 
     private bool isGamePaused;
     private bool isInitialized;
@@ -87,7 +86,6 @@ public class GameManager : MonoBehaviour
 
         player.transform.position += (Vector3)(curr - prev);
 
-        galaxyManager.UpdateVisiblePlanets(mainCamera, planetVisibilityMultiplier);
     }
 
     private void UpdatePlayerState()
@@ -138,12 +136,6 @@ public class GameManager : MonoBehaviour
         mainMenu.SetActive(isGamePaused);
         Time.timeScale = isGamePaused ? 0 : 1;
     }
-
-    public bool IsPlanetVisible(int index)
-    {
-        return galaxyManager.IsPlanetVisible(index);
-    }
-
 
     private void OnDrawGizmos()
     {
