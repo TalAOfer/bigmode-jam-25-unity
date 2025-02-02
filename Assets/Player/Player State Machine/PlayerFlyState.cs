@@ -9,6 +9,7 @@ public class PlayerFlyState : PlayerBaseState
     public override void OnEnterState()
     {
         base.OnEnterState();
+        GameManager.Instance.backgroundManager.GoToSpaceBG();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Jump");
         CameraController.Instance.SetCameraState(CameraController.CameraState.Fly);
     }
@@ -16,6 +17,7 @@ public class PlayerFlyState : PlayerBaseState
     public override void OnExitState()
     {
         base.OnExitState();
+        GameManager.Instance.backgroundManager.GoToPlanetSkybox();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Land");
     }
 

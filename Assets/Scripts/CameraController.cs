@@ -81,7 +81,7 @@ public class CameraController : MonoBehaviour
             player.planetIdx < GameManager.Instance.galaxyManager.planets.Count)
         {
             Planet currentPlanet = GameManager.Instance.galaxyManager.planets[player.planetIdx];
-            Vector2 toPlanet = currentPlanet.position - (Vector2)player.transform.position;
+            Vector2 toPlanet = (Vector2)currentPlanet.transform.position - (Vector2)player.transform.position;
 
             float targetRotation = Mathf.Atan2(-toPlanet.x, toPlanet.y) * Mathf.Rad2Deg + 180f;
             float angleDiff = Mathf.DeltaAngle(currentRotation, targetRotation);

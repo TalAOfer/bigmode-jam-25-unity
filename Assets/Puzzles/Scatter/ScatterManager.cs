@@ -8,6 +8,7 @@ public class ScatterManager : MonoBehaviour
 {
     public List<Collectible> collectibles = new();
     public List<Collectible> activeCollectibles = new();
+    [ShowInInspector, ReadOnly] public int CollectiblesLeft => activeCollectibles.Count;
     [SerializeField] private float tweenTime;
     [SerializeField] private Ease tweenEase;
     [SerializeField] private float tweenDelay;
@@ -40,7 +41,7 @@ public class ScatterManager : MonoBehaviour
     public void OnColllectibleCollected(Collectible collectible)
     {
         activeCollectibles.Remove(collectible);
-        if (activeCollectibles.Count == 0)
+        if (activeCollectibles.Any())
         {
             Debug.Log("collected all");
         }

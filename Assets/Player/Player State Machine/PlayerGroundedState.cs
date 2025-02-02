@@ -14,7 +14,15 @@ public abstract class PlayerGroundedState : PlayerBaseState
         player.HandleGroundCollision();
         player.UpdateFacingDirection();
 
-        if (player.Input.NormInputY > 0 && player.IsGrounded())
+        if (player.IsGrounded())
+        {
+            if (player.Input.NormInputY > 0)
+            {
+                ChangeState(player.JumpState);
+            }
+        }
+
+        else
         {
             ChangeState(player.AirborneState);
         }

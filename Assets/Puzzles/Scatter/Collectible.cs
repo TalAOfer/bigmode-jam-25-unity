@@ -14,4 +14,13 @@ public class Collectible : MonoBehaviour
         transform.localPosition = Vector3.zero;
         gameObject.SetActive(false);
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            manager.OnColllectibleCollected(this);
+            gameObject.SetActive(false);
+        }
+    }
 }

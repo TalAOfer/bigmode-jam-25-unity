@@ -17,6 +17,7 @@ public abstract class PlayerBaseState
 
     public virtual void OnEnterState()
     {
+        hasStartedTransition = false;
         timeSinceEntered = 0;
         player.PlayerStateName = this.GetType().Name;
         player.Anim.SetBool(animBoolName, true);

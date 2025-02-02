@@ -12,9 +12,10 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerInputController _input;
     public PlayerInputController Input => _input;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    public Animator Anim {  get; private set; }
-    [ShowInInspector]public bool View_IsGrounded => IsGrounded();
-    [ShowInInspector] public bool View_IsTransitioningState => PlayerStateMachine != null
+    public Animator Anim { get; private set; }
+    [ShowInInspector] public bool View_IsGrounded => IsGrounded();
+    [ShowInInspector]
+    public bool View_IsTransitioningState => PlayerStateMachine != null
         && PlayerStateMachine.CurrentState != null
         && PlayerStateMachine.CurrentState.hasStartedTransition;
     public Vector2 ToPlanet => transform.position - currentPlanet.transform.position;
@@ -44,6 +45,7 @@ public class Player : MonoBehaviour
     public PlayerSprintState SprintState { get; private set; }
     public PlayerAirborneState AirborneState { get; private set; }
     public PlayerFlyState FlyState { get; private set; }
+    public PlayerJumpState JumpState { get; private set; }
 
 
     private void Awake()
@@ -56,6 +58,7 @@ public class Player : MonoBehaviour
         WalkState = new PlayerWalkState(this, PlayerStateMachine, "Walk");
         RunState = new PlayerRunState(this, PlayerStateMachine, "Run");
         SprintState = new PlayerSprintState(this, PlayerStateMachine, "Sprint");
+        JumpState = new PlayerJumpState(this, PlayerStateMachine, "Airborne");
         AirborneState = new PlayerAirborneState(this, PlayerStateMachine, "Airborne");
         FlyState = new PlayerFlyState(this, PlayerStateMachine, "Fly");
 
@@ -74,7 +77,7 @@ public class Player : MonoBehaviour
 
         transform.position += (Vector3)velocity * Time.deltaTime;
         transform.rotation = Quaternion.Euler(0, 0, rotation);
-        
+
     }
 
     public void GetClosestPlanet(List<Planet> planets)
@@ -84,7 +87,7 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < planets.Count; i++)
         {
-            Vector2 diff = planets[i].position - (Vector2)transform.position;
+            Vector2 diff = (Vector2)planets[i].transform.position - (Vector2)transform.position;
             float dist = diff.magnitude;
             float edge = dist - (planets[i].radius + _data.PLAYER_RADIUS);
 
@@ -125,7 +128,7 @@ public class Player : MonoBehaviour
 
     private void UpdateFlyState(Planet planet)
     {
-        Vector2 toPlanet = (Vector2)transform.position - planet.position;
+        Vector2 toPlanet = (Vector2)transform.position - (Vector2)planet.transform.position;
         float dist = toPlanet.magnitude;
         float edge = planet.radius + _data.PLAYER_RADIUS;
 
@@ -139,7 +142,7 @@ public class Player : MonoBehaviour
     public bool IsGrounded()
     {
         if (currentPlanet == null) return false;
-        Vector2 toPlanet = (Vector2)transform.position - currentPlanet.position;
+        Vector2 toPlanet = (Vector2)transform.position - (Vector2)currentPlanet.transform.position;
         float dist = toPlanet.magnitude;
         float edge = currentPlanet.radius + Data.PLAYER_RADIUS;
         return dist < edge + Data.PLAYER_ON_GROUND_THRESHOLD;
@@ -147,7 +150,7 @@ public class Player : MonoBehaviour
 
     public void HandleGroundCollision()
     {
-        Vector2 toPlanet = (Vector2)transform.position - currentPlanet.position;
+        Vector2 toPlanet = (Vector2)transform.position - (Vector2)currentPlanet.transform.position;
         float dist = toPlanet.magnitude;
         float edge = currentPlanet.radius + Data.PLAYER_RADIUS;
 
@@ -155,7 +158,7 @@ public class Player : MonoBehaviour
         if (dist < edge + Data.PLAYER_ON_GROUND_THRESHOLD)
         {
             Vector2 normal = toPlanet / dist;
-            transform.position = currentPlanet.position + normal * edge;
+            transform.position = (Vector2)currentPlanet.transform.position + normal * edge;
             lastNormal = normal;
             float vel = Vector2.Dot(velocity, normal);
             if (vel < 0)
@@ -179,15 +182,14 @@ public class Player : MonoBehaviour
 
     public void UpdateFacingDirection()
     {
-        if (spriteRenderer != null)
-        {
-            Vector2 normal = Normal;
-            Vector2 tangent = new (-normal.y, normal.x);
-            float tv = Vector2.Dot(velocity, tangent);
-            if (velocity == Vector2.zero) return;
-            facing = tv < 0 ? 1 : -1;
-            spriteRenderer.flipX = facing < 0;
-        }
+        if (Input.NormInputX == 0 || spriteRenderer == null) return;
+
+        Vector2 normal = Normal;
+        Vector2 tangent = new(-normal.y, normal.x);
+        float tv = Vector2.Dot(velocity, tangent);
+        if (velocity == Vector2.zero) return;
+        facing = tv < 0 ? 1 : -1;
+        spriteRenderer.flipX = facing < 0;
     }
 
     private void OnDrawGizmos()
