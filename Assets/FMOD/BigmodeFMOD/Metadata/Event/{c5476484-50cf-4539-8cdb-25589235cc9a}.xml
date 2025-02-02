@@ -241,6 +241,9 @@
 		<property name="length">
 			<value>0.5</value>
 		</property>
+		<property name="transitionOffset">
+			<value>1</value>
+		</property>
 		<relationship name="timeline">
 			<destination>{df839e32-0f25-450e-8930-f267cba17730}</destination>
 		</relationship>
@@ -264,6 +267,9 @@
 		<property name="quantizationInterval">
 			<value>6</value>
 		</property>
+		<property name="transitionOffset">
+			<value>1</value>
+		</property>
 		<relationship name="timeline">
 			<destination>{df839e32-0f25-450e-8930-f267cba17730}</destination>
 		</relationship>
@@ -286,6 +292,9 @@
 		</property>
 		<property name="quantizationInterval">
 			<value>6</value>
+		</property>
+		<property name="transitionOffset">
+			<value>1</value>
 		</property>
 		<relationship name="timeline">
 			<destination>{df839e32-0f25-450e-8930-f267cba17730}</destination>
@@ -386,6 +395,12 @@
 		<property name="length">
 			<value>1</value>
 		</property>
+		<property name="quantizationInterval">
+			<value>6</value>
+		</property>
+		<property name="transitionOffset">
+			<value>1</value>
+		</property>
 		<relationship name="timeline">
 			<destination>{df839e32-0f25-450e-8930-f267cba17730}</destination>
 		</relationship>
@@ -405,6 +420,12 @@
 		</property>
 		<property name="length">
 			<value>2</value>
+		</property>
+		<property name="quantizationInterval">
+			<value>6</value>
+		</property>
+		<property name="transitionOffset">
+			<value>1</value>
 		</property>
 		<relationship name="timeline">
 			<destination>{df839e32-0f25-450e-8930-f267cba17730}</destination>
@@ -426,6 +447,9 @@
 		<property name="length">
 			<value>1</value>
 		</property>
+		<property name="transitionOffset">
+			<value>1</value>
+		</property>
 		<relationship name="timeline">
 			<destination>{df839e32-0f25-450e-8930-f267cba17730}</destination>
 		</relationship>
@@ -445,6 +469,12 @@
 		</property>
 		<property name="length">
 			<value>0.80799999999999983</value>
+		</property>
+		<property name="quantizationInterval">
+			<value>6</value>
+		</property>
+		<property name="transitionOffset">
+			<value>1</value>
 		</property>
 		<relationship name="timeline">
 			<destination>{df839e32-0f25-450e-8930-f267cba17730}</destination>
