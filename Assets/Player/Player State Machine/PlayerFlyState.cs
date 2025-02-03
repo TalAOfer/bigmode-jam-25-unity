@@ -12,6 +12,8 @@ public class PlayerFlyState : PlayerBaseState
         player.socketCollider.enabled = false;
         GameManager.Instance.backgroundManager.GoToSpaceBG();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Jump");
+        GameManager.Instance.audioController.PlayOneShot("Player/Flying Loop");
+        GameManager.Instance.audioController.SetRunningParameter(true);
         CameraController.Instance.SetCameraState(CameraController.CameraState.Fly);
         GameManager.Instance.planetDirectionIndicatorManager.ShowIndicators();
     }
@@ -22,6 +24,7 @@ public class PlayerFlyState : PlayerBaseState
         player.socketCollider.enabled = true;
         GameManager.Instance.backgroundManager.GoToPlanetSkybox();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Land");
+        GameManager.Instance.audioController.SetRunningParameter(false);
         CameraController.Instance.SetCameraState(CameraController.CameraState.Land);
         GameManager.Instance.planetDirectionIndicatorManager.HideIndicators();
     }

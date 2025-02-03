@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,14 @@ public class ScreenFlash : MonoBehaviour
     public Image puzzleCompleteText;
     public float fadeDuration;
     public Ease fadeEase;
+    public float slowFadeTime;
+    public Ease slowFadeEase;
+
+    private void Awake()
+    {
+        whiteImage.color = Color.white;
+        whiteImage.DOFade(0, 1.5f);
+    }
 
     [Button]
     public void TriggerFlash()
@@ -18,6 +27,11 @@ public class ScreenFlash : MonoBehaviour
         color.a = startAlpha;
         whiteImage.color = color;
         whiteImage.DOFade(0, fadeDuration).SetEase(fadeEase);
+    }
+
+    public IEnumerator TriggerSlowFlash()
+    {
+        yield return whiteImage.DOFade(1, slowFadeTime).SetEase(slowFadeEase).WaitForCompletion();
     }
 
     public void TriggerPuzzleComplete()

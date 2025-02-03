@@ -45,6 +45,7 @@ public class Planet : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
+        GameManager.Instance.audioController.SetMusicParameter(2);
         yield return CameraController.Instance.GoBackToPlayerRoutine();
     }
 

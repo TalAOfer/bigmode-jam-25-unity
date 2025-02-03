@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SunManager : FlowerSocketSequencer
 {
@@ -7,6 +8,7 @@ public class SunManager : FlowerSocketSequencer
     public override IEnumerator StartSequence()
     {
         int puzzlesSolved = 0;
+        GameManager.Instance.audioController.PlayOneShot("World interaction/Plug in");
 
         foreach (var planet in GameManager.Instance.galaxyManager.planets)
         {
@@ -15,8 +17,17 @@ public class SunManager : FlowerSocketSequencer
 
         if (numberOfPuzzlesToWin == puzzlesSolved)
         {
-            Debug.Log("you won");
+            GameManager.Instance.audioController.PlayOneShot("Music/Ending song");
+            yield return CameraController.Instance.WatchPlanetRoutine(planet);
+            yield return GameManager.Instance.screenFlash.TriggerSlowFlash();
+            SceneManager.LoadScene(2);
+        } 
+        
+        else
+        {
+            yield return new WaitForSeconds(0.5f);
             yield break;
         }
+
     }
 }

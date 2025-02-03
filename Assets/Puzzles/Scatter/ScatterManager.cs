@@ -30,6 +30,8 @@ public class ScatterManager : FlowerSocketSequencer
 
     public override IEnumerator StartSequence()
     {
+        GameManager.Instance.audioController.PlayOneShot("World interaction/Plug in");
+
         if (!hasScattered)
         {
             yield return ScatterSequence();
@@ -65,6 +67,9 @@ public class ScatterManager : FlowerSocketSequencer
         Sequence sequence = DOTween.Sequence();
         float currentDelay = 0f;
 
+        SetCountText();
+        countTMP.gameObject.SetActive(true);
+
         foreach (Collectible collectible in collectibles)
         {
             sequence.Insert(currentDelay, DOTween.Sequence()
@@ -72,15 +77,15 @@ public class ScatterManager : FlowerSocketSequencer
             {
                 collectible.gameObject.SetActive(true);
                 collectible.transform.SetParent(collectible.originalParent, true);
+                GameManager.Instance.audioController.PlayOneShot("Player/Jump");
+                SetCountText();
+
             })
             .Append(collectible.transform.DOLocalMove(Vector3.zero, tweenTime).SetEase(tweenEase)));
             currentDelay += tweenDelay;
         }
 
         yield return sequence.WaitForCompletion();
-
-        SetCountText();
-        countTMP.gameObject.SetActive(true);
 
         foreach (Collectible collectible in collectibles)
         {
@@ -104,7 +109,7 @@ public class ScatterManager : FlowerSocketSequencer
 
         if (activeCollectibles.Any())
         {
-            Debug.Log("collected all");
+            GameManager.Instance.screenFlash.TriggerFlash();
         }
     }
 

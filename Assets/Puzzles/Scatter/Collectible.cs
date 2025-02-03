@@ -19,6 +19,7 @@ public class Collectible : MonoBehaviour
     {
         if (collision.CompareTag("PlayerPickup"))
         {
+            GameManager.Instance.audioController.PlayOneShot("World interaction/Pickup");
             manager.OnColllectibleCollected(this);
             gameObject.SetActive(false);
         }

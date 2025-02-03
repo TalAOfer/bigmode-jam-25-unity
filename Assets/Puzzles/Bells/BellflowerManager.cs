@@ -13,7 +13,13 @@ public class BellflowerManager : FlowerSocketSequencer
 
     public override IEnumerator StartSequence()
     {
-        if (planet.completed) yield break;
+        GameManager.Instance.audioController.PlayOneShot("World interaction/Plug in");
+
+        if (planet.completed)
+        {
+            yield return new WaitForSeconds(0.5f);
+            yield break;
+        }
 
         List<string> currentSequence = new List<string>();
 
