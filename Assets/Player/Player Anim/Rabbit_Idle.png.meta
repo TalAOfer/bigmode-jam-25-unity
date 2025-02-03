@@ -146,7 +146,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -168,7 +168,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 256
-        y: 0
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -181,6 +181,50 @@ TextureImporter:
       bones: []
       spriteID: ad018df3eada7f840800000000000000
       internalID: 5257862053885382874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rabbit_Idle_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10251485e23f1c94db693152c4f3b080
+      internalID: -1760786306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rabbit_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83d0e7aee4c7f8f4cbf22f3853d58e88
+      internalID: -977008241
       vertices: []
       indices: 
       edges: []
@@ -201,6 +245,8 @@ TextureImporter:
     nameFileIdTable:
       Rabbit_Idle_0: -2752584300984662343
       Rabbit_Idle_1: 5257862053885382874
+      Rabbit_Idle_2: -1760786306
+      Rabbit_Idle_3: -977008241
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
