@@ -7,10 +7,9 @@ public class Bellflower : FlowerSocketSequencer
 {
     [Range(0, 3)]
     [SerializeField] private int index;
-    [SerializeField, ReadOnly] private readonly List<string> notes = new() { "C", "D", "B", "G" };
-    [SerializeField] private readonly List<Color> noteColors = new List<Color> { Color.red, Color.green, Color.blue, Color.cyan };
+    [SerializeField] private NotesAndColors notes;
     [SerializeField] private ParticleSystem particles;
-    public string CurrentNote => notes[index];
+    public string CurrentNote => notes.value[index].letter;
     public override IEnumerator StartSequence()
     {
         index++;
@@ -20,7 +19,6 @@ public class Bellflower : FlowerSocketSequencer
         }
 
         PlayNote();
-        EmitParticle();
 
         yield return null;
     }
@@ -28,7 +26,8 @@ public class Bellflower : FlowerSocketSequencer
     public void PlayNote()
     {
         string noteString = $"World interaction/Musical puzzle/{CurrentNote} note";
-        GameManager.Instance.audioController.PlayOneShot(noteString);
+        GameManager.Instance.audioController.PlayOneShotInPosition(noteString, GameManager.Instance.player.transform.position);
+        EmitParticle();
     }
 
     public void EmitParticle()
@@ -36,7 +35,7 @@ public class Bellflower : FlowerSocketSequencer
         if (particles != null)
         {
             ParticleSystem.MainModule module = particles.main;
-            module.startColor = noteColors[index];
+            module.startColor = notes.value[index].color;
             particles.Play();
         }
 

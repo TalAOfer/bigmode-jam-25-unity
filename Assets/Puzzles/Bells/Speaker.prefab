@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  notes: {fileID: 11400000, guid: 853924509ea85bc49b09b715921f259f, type: 2}
   noteDelay: 3
   particles: {fileID: 4428822896903135522}
 --- !u!1001 &4018069176569393348

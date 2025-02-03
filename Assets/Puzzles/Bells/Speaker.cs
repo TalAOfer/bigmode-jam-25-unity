@@ -6,11 +6,10 @@ public class Speaker : MonoBehaviour
 {
     [Range(0, 3)]
     [SerializeField] private int index;
-    [SerializeField, ReadOnly] private readonly List<string> notes = new() { "C", "D", "B", "G" };
-    [SerializeField] private readonly List<Color> noteColors = new List<Color> { Color.red, Color.green, Color.blue, Color.cyan };
-    [SerializeField] private float noteDelay = 0.5f;
+    [SerializeField] private NotesAndColors notes;
+    [SerializeField] private float noteDelay = 2f;
     [SerializeField] ParticleSystem particles;
-    public string CurrentNote => notes[index];
+    public string CurrentNote => notes.value[index].letter;
 
     private float timeElapsed;
 
@@ -19,7 +18,7 @@ public class Speaker : MonoBehaviour
         if (particles != null)
         {
             var main = particles.main;
-            main.startColor = noteColors[index];
+            main.startColor = notes.value[index].color;
         }
 
         Debug.Log(gameObject.name);

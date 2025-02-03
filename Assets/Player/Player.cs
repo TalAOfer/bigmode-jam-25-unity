@@ -35,7 +35,6 @@ public class Player : MonoBehaviour
     [SerializeField] private bool showDebugGizmos = true;
 
     private Vector2 lastNormal;
-    public float verticalVelocity;
 
     public string PlayerStateName;
     public PlayerStateMachine PlayerStateMachine { get; private set; }

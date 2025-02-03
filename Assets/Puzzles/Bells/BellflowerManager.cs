@@ -9,9 +9,15 @@ public class BellflowerManager : FlowerSocketSequencer
     [SerializeField] private float jingleDuration = 1.5f;
     [SerializeField] private float noteDelay = 0.5f;
     [SerializeField] private List<Bellflower> bellFlowers;
+    [SerializeField] private List<Speaker> speakers;
+
     public override IEnumerator StartSequence()
     {
+        if (planet.completed) yield break;
+
         List<string> currentSequence = new List<string>();
+
+        yield return CameraController.Instance.WatchPlanetRoutine(planet);
 
         for (int i = 0; i < bellFlowers.Count; i++)
         {
@@ -24,10 +30,20 @@ public class BellflowerManager : FlowerSocketSequencer
 
         if (areEqual)
         {
+            foreach(Speaker speaker in speakers)
+            {
+                speaker.gameObject.SetActive(false);
+            }
+
             GameManager.Instance.audioController.PlayOneShot("World interaction/Musical puzzle/Music Puzzle jingle");
             yield return new WaitForSeconds(jingleDuration);
 
             yield return OnPlanetComplete();
+        } 
+        
+        else
+        {
+            yield return CameraController.Instance.GoBackToPlayerRoutine();
         }
     }
 }

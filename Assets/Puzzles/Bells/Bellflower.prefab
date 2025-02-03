@@ -242,7 +242,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   planet: {fileID: 0}
   index: 1
-  ParticleSystem: {fileID: 1729583702582697411}
+  notes: {fileID: 11400000, guid: 853924509ea85bc49b09b715921f259f, type: 2}
+  particles: {fileID: 1729583702582697411}
 --- !u!1001 &1348244675859139621
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -4,19 +4,22 @@ using UnityEngine;
 public class PlanetDirectionIndicatorManager : MonoBehaviour
 {
     [SerializeField] private Player player;
-    [SerializeField] private float padding = 20f;
-    private Camera mainCamera;
+
+    [SerializeField] private float maxAlpha = 0.5f;
+    [SerializeField] private float showHideDuration = 0.5f;
+    [SerializeField] private float distance = 5f;
 
     [SerializeField] private List<PlanetDirectionIndicator> directionIndicators;
     private bool isInitialized;
 
     private void Awake()
     {
-        mainCamera = Camera.main;
-
         for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
         {
             directionIndicators[i].Initialize(GameManager.Instance.galaxyManager.planets[i]);
+            Vector3 pos = directionIndicators[i].sr.transform.position;
+            pos.y = distance;
+            directionIndicators[i].sr.transform.position = pos;
         }
 
         isInitialized = true;
@@ -26,7 +29,7 @@ public class PlanetDirectionIndicatorManager : MonoBehaviour
     {
         if (!isInitialized) return;
 
-        SharedIndicatorData indicatorData = GetSharedData();
+        transform.position = player.transform.position;
 
         for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
         {
@@ -34,26 +37,28 @@ public class PlanetDirectionIndicatorManager : MonoBehaviour
             directionIndicators[i].gameObject.SetActive(shouldShowIndicator);
             if (shouldShowIndicator)
             {
-                directionIndicators[i].UpdateIndicator(indicatorData);
+                directionIndicators[i].UpdateIndicator();
             }
         }
     }
 
-    public SharedIndicatorData GetSharedData()
+    public void ShowIndicators()
     {
-        return new SharedIndicatorData
+        for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
         {
-            playerScreenPos = mainCamera.WorldToScreenPoint(player.transform.position),
-            screenSize = new Vector2(Screen.width, Screen.height),
-            padding = padding,
-            camera = mainCamera
-        };
+            bool shouldShowIndicator = !directionIndicators[i].planet.IsVisible;
+            if (shouldShowIndicator)
+            {
+                directionIndicators[i].ShowIndicator(showHideDuration, maxAlpha);
+            }
+        }
     }
-}
-public struct SharedIndicatorData
-{
-    public Vector2 playerScreenPos;
-    public Vector2 screenSize;
-    public float padding;
-    public Camera camera;
+
+    public void HideIndicators()
+    {
+        for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
+        {
+            directionIndicators[i].HideIndicator(showHideDuration);
+        }
+    }
 }

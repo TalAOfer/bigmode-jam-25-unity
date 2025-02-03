@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class PlayerAirborneState : PlayerBaseState
 {
@@ -28,7 +29,8 @@ public class PlayerAirborneState : PlayerBaseState
             ChangeState(player.IdleState);
         }
 
-        if (player.verticalVelocity >= 0 && player.CurrentFlowerSocket)
+        float verticalVelocity = Vector3.Dot(player.velocity, player.transform.up);
+        if (verticalVelocity >= 0 && player.CurrentFlowerSocket)
         {
             ChangeState(player.ConnectToSocketState);
         }

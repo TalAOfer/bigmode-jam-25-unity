@@ -13,6 +13,7 @@ public class PlayerFlyState : PlayerBaseState
         GameManager.Instance.backgroundManager.GoToSpaceBG();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Jump");
         CameraController.Instance.SetCameraState(CameraController.CameraState.Fly);
+        GameManager.Instance.planetDirectionIndicatorManager.ShowIndicators();
     }
 
     public override void OnExitState()
@@ -22,6 +23,7 @@ public class PlayerFlyState : PlayerBaseState
         GameManager.Instance.backgroundManager.GoToPlanetSkybox();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Land");
         CameraController.Instance.SetCameraState(CameraController.CameraState.Land);
+        GameManager.Instance.planetDirectionIndicatorManager.HideIndicators();
     }
 
     public override void UpdateState()

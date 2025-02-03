@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public AudioController audioController;
     public ScreenFlash screenFlash;
     public BackgroundManager backgroundManager;
+    public PlanetDirectionIndicatorManager planetDirectionIndicatorManager;
 
     [Header("Game Settings")]
     [SerializeField] private float worldBoundary = 250f;
