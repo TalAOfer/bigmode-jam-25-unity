@@ -11,7 +11,6 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.OnEnterState();
         player.velocity = Vector3.zero;
-        GameManager.Instance.audioController.AlterPlayerStateSoundParameter("None");
 
         CameraController.Instance.SetCameraState(CameraController.CameraState.Normal);
     }

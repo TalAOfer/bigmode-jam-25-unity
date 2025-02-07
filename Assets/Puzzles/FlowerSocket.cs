@@ -1,13 +1,40 @@
 using System.Collections;
 using UnityEngine;
 
-public class FlowerSocket : MonoBehaviour
+public abstract class FlowerSocket : MonoBehaviour
 {
-    public FlowerSocketSequencer sequencer;
+    [SerializeField] protected Planet planet;
+    public Transform DockingPoint { get; private set; }
+    public ParticleSystem ParticleSystem { get; private set; }
 
-    public IEnumerator StartSequence()
+
+    private void OnEnable()
     {
-        yield return sequencer.StartSequence();
+        DockingPoint = transform.Find("Docking Point");
+        
+        if (DockingPoint == null )
+        {
+            Debug.LogError($"No docking point", gameObject);
+            return;
+        }
+
+        Transform Particles = transform.Find("Particles");
+
+        if ( Particles == null )
+        {
+            Debug.LogError($"No particle system", gameObject);
+            return;
+        }
+        
+        DockingPoint.gameObject.SetActive(false);
+        
+        ParticleSystem = Particles.GetComponent<ParticleSystem>();
+    }
+
+    public virtual IEnumerator StartSequence()
+    {
+        ParticleSystem.Stop(true);
+        yield return null;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -15,6 +42,7 @@ public class FlowerSocket : MonoBehaviour
         if (collision.CompareTag("PlayerSocket"))
         {
             Player player = collision.transform.GetComponentInParent<Player>();
+            ParticleSystem.Play();
             player.OnFlowerSocketTriggerEnter(this);
         }
     }
@@ -24,7 +52,13 @@ public class FlowerSocket : MonoBehaviour
         if (collision.CompareTag("PlayerSocket"))
         {
             Player player = collision.transform.GetComponentInParent<Player>();
+            ParticleSystem.Stop(true);
             player.OnFlowerSocketTriggerExit();
         }
+    }
+
+    public IEnumerator OnPlanetComplete()
+    {
+        yield return planet.OnPlanetComplete();
     }
 }

@@ -20,8 +20,6 @@ public class Speaker : MonoBehaviour
             var main = particles.main;
             main.startColor = notes.value[index].color;
         }
-
-        Debug.Log(gameObject.name);
     }
 
     public void Update()

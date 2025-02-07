@@ -9,7 +9,7 @@ public abstract class PlayerGroundedState : PlayerBaseState
     public override void UpdateState()
     {
         base.UpdateState();
-        
+
         ApplyPlanetPhysics();
         player.HandleGroundCollision();
         player.UpdateFacingDirection();
@@ -18,7 +18,15 @@ public abstract class PlayerGroundedState : PlayerBaseState
         {
             if (player.Input.NormInputY > 0)
             {
-                ChangeState(player.JumpState);
+                if (player.CurrentFlowerSocket == null)
+                {
+                    ChangeState(player.JumpState);
+                }
+                
+                else
+                {
+                    ChangeState(player.ConnectState);
+                }
             }
         }
 
@@ -29,7 +37,7 @@ public abstract class PlayerGroundedState : PlayerBaseState
 
 
     }
-    
+
     protected void UpdateStateAccordingToSpeed()
     {
         float speed = player.velocity.magnitude;
@@ -103,5 +111,5 @@ public abstract class PlayerGroundedState : PlayerBaseState
         }
     }
 
-    
+
 }

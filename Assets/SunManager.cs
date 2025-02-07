@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SunManager : FlowerSocketSequencer
+public class SunManager : FlowerSocket
 {
     [SerializeField] private int numberOfPuzzlesToWin = 2;
     public override IEnumerator StartSequence()

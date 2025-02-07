@@ -9,7 +9,6 @@ public class PlayerSprintState : PlayerGroundedState
     public override void OnEnterState()
     {
         base.OnEnterState();
-        GameManager.Instance.audioController.AlterPlayerStateSoundParameter("Sprint");
 
         CameraController.Instance.SetCameraState(CameraController.CameraState.Sprint);
     }

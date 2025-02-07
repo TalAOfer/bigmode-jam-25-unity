@@ -45,7 +45,8 @@ public class Player : MonoBehaviour
     public PlayerAirborneState AirborneState { get; private set; }
     public PlayerFlyState FlyState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
-    public PlayerConnectToSocketState ConnectToSocketState { get; private set; }
+    public PlayerConnectState ConnectState { get; private set; }
+    public PlayerPluggedState PluggedState {  get; private set; }
 
     public Collider2D pickupCollider;
     public Collider2D socketCollider;
@@ -66,12 +67,16 @@ public class Player : MonoBehaviour
         JumpState = new PlayerJumpState(this, PlayerStateMachine, "Airborne");
         AirborneState = new PlayerAirborneState(this, PlayerStateMachine, "Airborne");
         FlyState = new PlayerFlyState(this, PlayerStateMachine, "Fly");
-        ConnectToSocketState = new PlayerConnectToSocketState(this, PlayerStateMachine, "Plug");
-
-        GameManager.Instance.audioController.PlayOneShot("Player/Movement");
+        ConnectState = new PlayerConnectState(this, PlayerStateMachine, "Airborne");
+        PluggedState = new PlayerPluggedState(this, PlayerStateMachine, "Plug");
 
         PlayerStateMachine.InitializeState(IdleState);
     }
+
+    public void PlayWalkSound() => GameManager.Instance.audioController.PlayOneShot("Player/Walk");
+    public void PlayRunSound() => GameManager.Instance.audioController.PlayOneShot("Player/Run");
+    public void PlaySprintSound() => GameManager.Instance.audioController.PlayOneShot("Player/Sprint");
+
 
     public void UpdatePlayer()
     {
@@ -95,7 +100,7 @@ public class Player : MonoBehaviour
         {
             Vector2 diff = (Vector2)planets[i].transform.position - (Vector2)transform.position;
             float dist = diff.magnitude;
-            float edge = dist - (planets[i].radius + _data.PLAYER_RADIUS);
+            float edge = dist - (planets[i].PlanetRadius + _data.PLAYER_RADIUS);
 
             if (edge < closest)
             {
@@ -111,46 +116,12 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void ProcessFlyState(float x, float y)
-    {
-        velocity = direction * _data.PLAYER_FLY_SPEED;
-
-        if (x == 0 && y == 0) return;
-
-        // Normalize diagonal movement
-        if (x == 0) x = 1 - Mathf.Abs(y);
-        if (y == 0) y = 1 - Mathf.Abs(x);
-
-        // Calculate target direction in planet space
-        float rads = rotation * Mathf.Deg2Rad;
-        Vector2 target = new Vector2(
-            x * Mathf.Cos(rads) - y * Mathf.Sin(rads),
-            x * Mathf.Sin(rads) + y * Mathf.Cos(rads)
-        ).normalized;
-
-        direction = Vector2.Lerp(direction, target, _data.PLAYER_FLY_HANDLING);
-        direction = direction.normalized;
-    }
-
-    private void UpdateFlyState(Planet planet)
-    {
-        Vector2 toPlanet = (Vector2)transform.position - (Vector2)planet.transform.position;
-        float dist = toPlanet.magnitude;
-        float edge = planet.radius + _data.PLAYER_RADIUS;
-
-        if (dist < edge + _data.PLAYER_ON_GROUND_THRESHOLD)
-        {
-            //state = PlayerState.Idle;
-            velocity = Vector2.zero;
-        }
-    }
-
     public bool IsGrounded()
     {
         if (currentPlanet == null) return false;
         Vector2 toPlanet = (Vector2)transform.position - (Vector2)currentPlanet.transform.position;
         float dist = toPlanet.magnitude;
-        float edge = currentPlanet.radius + Data.PLAYER_RADIUS;
+        float edge = currentPlanet.PlanetRadius + Data.PLAYER_RADIUS;
         return dist < edge + Data.PLAYER_ON_GROUND_THRESHOLD;
     }
 
@@ -158,7 +129,7 @@ public class Player : MonoBehaviour
     {
         Vector2 toPlanet = (Vector2)transform.position - (Vector2)currentPlanet.transform.position;
         float dist = toPlanet.magnitude;
-        float edge = currentPlanet.radius + Data.PLAYER_RADIUS;
+        float edge = currentPlanet.PlanetRadius + Data.PLAYER_RADIUS;
 
         // Only handle collision if we're actually colliding
         if (dist < edge + Data.PLAYER_ON_GROUND_THRESHOLD)
@@ -176,7 +147,7 @@ public class Player : MonoBehaviour
 
     public void ApplyFriction(Planet planet, float dist, float dt)
     {
-        float t = Mathf.Clamp01((dist - planet.radius) / planet.radius);
+        float t = Mathf.Clamp01((dist - planet.PlanetRadius) / planet.PlanetRadius);
         float friction = Mathf.Lerp(
             IsGrounded() ? _data.PLAYER_FRICTION_GROUND : _data.PLAYER_FRICTION_AIR,
             1,
@@ -196,6 +167,11 @@ public class Player : MonoBehaviour
         if (velocity == Vector2.zero) return;
         facing = tv < 0 ? 1 : -1;
         spriteRenderer.flipX = facing < 0;
+    }
+
+    public void ManuallyUpdateFacingDirection(bool isRight)
+    {
+        spriteRenderer.flipX = !isRight;
     }
 
     private void OnDrawGizmos()

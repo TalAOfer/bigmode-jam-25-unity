@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BellflowerManager : FlowerSocketSequencer
+public class BellflowerManager : FlowerSocket
 {
     [SerializeField] private List<string> correctSequence = new() { "C", "D", "B", "G" };
     [SerializeField] private float jingleDuration = 1.5f;

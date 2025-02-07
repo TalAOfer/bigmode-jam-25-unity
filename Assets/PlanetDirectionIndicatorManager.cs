@@ -5,21 +5,28 @@ public class PlanetDirectionIndicatorManager : MonoBehaviour
 {
     [SerializeField] private Player player;
 
-    [SerializeField] private float maxAlpha = 0.5f;
-    [SerializeField] private float showHideDuration = 0.5f;
-    [SerializeField] private float distance = 5f;
+    [SerializeField] private IndicatorData data;
 
-    [SerializeField] private List<PlanetDirectionIndicator> directionIndicators;
+    [SerializeField] private GameObject indicatorPrefab;
+
+    private List<PlanetDirectionIndicator> activeIndicators = new();
+    
     private bool isInitialized;
+    private bool showIndicators;
 
     private void Awake()
     {
         for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
         {
-            directionIndicators[i].Initialize(GameManager.Instance.galaxyManager.planets[i]);
-            Vector3 pos = directionIndicators[i].sr.transform.position;
-            pos.y = distance;
-            directionIndicators[i].sr.transform.position = pos;
+            Planet currentPlanet = GameManager.Instance.galaxyManager.planets[i];
+            if (!currentPlanet.shouldShowIndicator) continue;
+
+            GameObject indicatorGO = Instantiate(indicatorPrefab, transform);
+            PlanetDirectionIndicator indicator = indicatorGO.GetComponent<PlanetDirectionIndicator>();
+
+            indicator.Initialize(GameManager.Instance.galaxyManager.planets[i], data.radius);         
+            
+            activeIndicators.Add(indicator);
         }
 
         isInitialized = true;
@@ -31,34 +38,44 @@ public class PlanetDirectionIndicatorManager : MonoBehaviour
 
         transform.position = player.transform.position;
 
-        for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
+        if (showIndicators)
         {
-            bool shouldShowIndicator = !directionIndicators[i].planet.IsVisible;
-            directionIndicators[i].gameObject.SetActive(shouldShowIndicator);
+            UpdateIndicators();
+        }
+    }
+
+    public void UpdateIndicators()
+    {
+        foreach(var indicator in activeIndicators)
+        {
+            indicator.UpdateIndicator();
+
+            bool shouldShowIndicator = !indicator.planet.IsVisible;
+
             if (shouldShowIndicator)
             {
-                directionIndicators[i].UpdateIndicator();
+                indicator.ShowIndicator(data.showFade, data.maxAlpha);
+            }
+
+            else
+            {
+                indicator.HideIndicator(data.hideFade);
             }
         }
     }
 
     public void ShowIndicators()
     {
-        for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
-        {
-            bool shouldShowIndicator = !directionIndicators[i].planet.IsVisible;
-            if (shouldShowIndicator)
-            {
-                directionIndicators[i].ShowIndicator(showHideDuration, maxAlpha);
-            }
-        }
+        showIndicators = true;
     }
 
     public void HideIndicators()
     {
-        for (int i = 0; i < GameManager.Instance.galaxyManager.planets.Count; i++)
+        showIndicators = false;
+
+        foreach(var indicator in activeIndicators)
         {
-            directionIndicators[i].HideIndicator(showHideDuration);
+            indicator.HideIndicator(data.hideFade);
         }
     }
 }

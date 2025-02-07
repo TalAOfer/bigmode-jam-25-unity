@@ -10,7 +10,6 @@ public class PlayerAirborneState : PlayerBaseState
     public override void OnEnterState()
     {
         base.OnEnterState();
-        GameManager.Instance.audioController.AlterPlayerStateSoundParameter("None");
         
         UpdateAnimatorAccordingToVerticalVelocity();
     }
@@ -24,15 +23,9 @@ public class PlayerAirborneState : PlayerBaseState
         player.UpdateFacingDirection();
         UpdateAnimatorAccordingToVerticalVelocity();
 
-        if (timeSinceEntered > 0.5f && player.IsGrounded())
+        if (timeSinceEntered > 0.15f && player.IsGrounded())
         {
             ChangeState(player.IdleState);
-        }
-
-        float verticalVelocity = Vector3.Dot(player.velocity, player.transform.up);
-        if (verticalVelocity >= 0 && player.CurrentFlowerSocket)
-        {
-            ChangeState(player.ConnectToSocketState);
         }
     }
 

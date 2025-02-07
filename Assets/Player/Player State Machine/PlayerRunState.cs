@@ -9,7 +9,6 @@ public class PlayerRunState : PlayerGroundedState
     public override void OnEnterState()
     {
         base.OnEnterState();
-        GameManager.Instance.audioController.AlterPlayerStateSoundParameter("Run");
 
         CameraController.Instance.SetCameraState(CameraController.CameraState.Normal);
     }

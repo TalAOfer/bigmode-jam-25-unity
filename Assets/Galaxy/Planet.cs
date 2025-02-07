@@ -11,6 +11,8 @@ public class Planet : MonoBehaviour
     public float gravity = 12f;
     public Planet parentPlanet;
     public Color skyboxColor;
+    public bool shouldShowIndicator;
+    [ShowIf("shouldShowIndicator")]
     public Sprite indicatorSprite;
     [ShowIf("shouldOrbit")]
     public float speed;
@@ -18,16 +20,18 @@ public class Planet : MonoBehaviour
 
     public void OnBecameVisible() => IsVisible = true;
     public void OnBecameInvisible() => IsVisible = false;
-    public float radius {  get; private set; }
+    private float planetRadius;
+    public float PlanetRadius => planetRadius;
     public float angle { get; private set; }
-    public float orbitRadius {  get; private set; }
+    private float orbitRadius;
+    public float OrbitRadius => orbitRadius;
     [ShowInInspector, ReadOnly] public bool completed {  get; private set; }
 
     private readonly float DEG2RAD = Mathf.Deg2Rad;
 
     public void Initialize()
     {
-        radius = transform.localScale.x / 2f;
+        planetRadius = transform.localScale.x / 2f;
         orbitRadius = parentPlanet != null ?
             Vector2.Distance((Vector2)transform.position, (Vector2)parentPlanet.transform.position) :
             0;
@@ -45,7 +49,6 @@ public class Planet : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        GameManager.Instance.audioController.SetMusicParameter(2);
         yield return CameraController.Instance.GoBackToPlayerRoutine();
     }
 
@@ -103,20 +106,6 @@ public class Planet : MonoBehaviour
 
 
         #endregion
-    }
-
-    private void OnDrawGizmos()
-    {
-        // Draw planet radius
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, radius);
-
-        // Draw orbit if applicable
-        if (parentPlanet != null)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(parentPlanet.transform.position, orbitRadius);
-        }
     }
 
     #region Old

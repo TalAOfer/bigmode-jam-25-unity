@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -44,8 +45,14 @@ public class GameManager : MonoBehaviour
         galaxyManager.Initialize();
         InitializePlayer();
         backgroundManager.GoToPlanetSkybox();
-        audioController.PlayOneShot("Music/Music");
         isInitialized = true;
+        StartCoroutine(PlayMusic());
+    }
+
+    public IEnumerator PlayMusic()
+    {
+        yield return new WaitForSeconds(1f);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/Music/Music");
     }
 
     private void InitializePlayer()
@@ -145,51 +152,4 @@ public class GameManager : MonoBehaviour
         Vector3 size = new Vector3(worldBoundary * 2, worldBoundary * 2, 0);
         Gizmos.DrawWireCube(center, size);
     }
-
-    #region Old
-    //[SerializeField] private float colorLerpSpeed = 0.05f;
-    //[SerializeField] private float skyColorMin = 0f;
-    //[SerializeField] private float skyColorMax = 0.77f;
-    //private Color32[] currentPalette = new Color32[5];
-    //private float skyColor;
-
-    //private void UpdatePaletteLerp()
-    //{
-    //    if (player.planetIdx >= galaxyManager.planets.Count || galaxyManager.planets[player.planetIdx] == null) return;
-
-    //    Planet currentPlanet = galaxyManager.planets[player.planetIdx];
-
-    //    // Update color palette
-    //    for (int i = 0; i < 5; i++)
-    //    {
-    //        currentPalette[i] = Color32.Lerp(currentPalette[i], currentPlanet.palette[i], colorLerpSpeed);
-    //    }
-
-    //    // Update sky color
-    //    float dist = Vector2.Distance(player.transform.position, currentPlanet.position);
-    //    float t = Mathf.Clamp01((dist - currentPlanet.radius * planetVisibilityMultiplier) /
-    //                           (currentPlanet.radius * planetVisibilityMultiplier));
-    //    skyColor = Mathf.Lerp(skyColorMax, skyColorMin, t);
-    //}
-
-    //public Color32[] GetCurrentPalette()
-    //{
-    //    return currentPalette;
-    //}
-
-    //public float GetSkyColor()
-    //{
-    //    return skyColor;
-    //}
-
-    //public Color32 HexToColor(string hex)
-    //{
-    //    hex = hex.Replace("0x", "").Replace("#", "");
-    //    byte r = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-    //    byte g = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-    //    byte b = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-    //    return new Color32(r, g, b, 255);
-    //}
-
-    #endregion
 }

@@ -7,13 +7,11 @@ public class PlayerDebugVisualizer : MonoBehaviour
 
     [Header("Visualization Settings")]
     [SerializeField] private bool showCollision = true;
-    [SerializeField] private bool showPlanetInteraction = true;
     [SerializeField] private bool showVelocity = true;
     [SerializeField] private bool showGroundNormal = true;
 
     [Header("Color Settings")]
     [SerializeField] private Color collisionColor = new Color(1f, 1f, 0f, 0.5f); // Semi-transparent yellow
-    [SerializeField] private Color planetInteractionColor = new Color(0f, 1f, 1f, 0.5f); // Semi-transparent cyan
     [SerializeField] private Color velocityColor = Color.green;
     [SerializeField] private Color groundNormalColor = Color.blue;
 
@@ -37,11 +35,6 @@ public class PlayerDebugVisualizer : MonoBehaviour
             DrawPlayerCollision();
         }
 
-        if (showPlanetInteraction && currentPlanet != null)
-        {
-            DrawPlanetInteraction();
-        }
-
         if (showVelocity)
         {
             DrawVelocityVector();
@@ -62,15 +55,6 @@ public class PlayerDebugVisualizer : MonoBehaviour
         // Draw player's center point
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, 0.1f);
-    }
-
-    private void DrawPlanetInteraction()
-    {
-        float groundThreshold = currentPlanet.radius + _data.PLAYER_ON_GROUND_THRESHOLD;
-
-        // Draw ground detection threshold
-        Gizmos.color = planetInteractionColor;
-        Gizmos.DrawWireSphere(currentPlanet.transform.position, groundThreshold);
     }
 
     private void DrawVelocityVector()

@@ -50,7 +50,7 @@ public abstract class PlayerBaseState
         player.rotation = Mathf.Atan2(-toPlanet.x, toPlanet.y) * Mathf.Rad2Deg;
 
         float dist = toPlanet.magnitude;
-        float edge = player.currentPlanet.radius + player.Data.PLAYER_RADIUS;
+        float edge = player.currentPlanet.PlanetRadius + player.Data.PLAYER_RADIUS;
 
 
         // Apply gravity

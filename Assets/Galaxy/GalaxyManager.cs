@@ -7,11 +7,25 @@ public class GalaxyManager : MonoBehaviour
 {
     [SerializeField] private Transform planetsContainer;
     public List<Planet> planets = new List<Planet>();
+    [SerializeField] private Player player;
+
+    #region Debugs
+    [FoldoutGroup("Debug"), SerializeField] private Color planetInteractionColor = new Color(0f, 1f, 1f, 0.5f);
+    [FoldoutGroup("Debug"), SerializeField] private bool showPlanetInteractions;
+    [FoldoutGroup("Debug"), SerializeField] private Color planetRadiusColor = new Color(0f, 1f, 1f, 0.5f);
+    [FoldoutGroup("Debug"), SerializeField] private bool showPlanetRadius;
+    [FoldoutGroup("Debug"), SerializeField] private Color planetOrbitColor = new Color(0f, 1f, 1f, 0.5f);
+    [FoldoutGroup("Debug"), SerializeField] private bool showPlanetOrbits;
+    #endregion
 
     [Button]
     public void PopulatePlanetList()
     {
         planets = planetsContainer.GetComponentsInChildren<Planet>().ToList();
+        foreach (var planet in planets)
+        {
+            planet.Initialize();
+        }
     }
 
     public void Initialize()
@@ -27,12 +41,47 @@ public class GalaxyManager : MonoBehaviour
         }
     }
 
+    public void UpdatePlanets(float deltaTime)
+    {
+        foreach (Planet planet in planets)
+        {
+            if (planet != null)
+            {
+                planet.UpdatePlanet(deltaTime);
+            }
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        foreach (var planet in planets)
+        {
+            if (showPlanetRadius)
+            {
+                Gizmos.color = planetRadiusColor;
+                Gizmos.DrawWireSphere(planet.transform.position, planet.PlanetRadius);
+            }
+
+            if (showPlanetInteractions)
+            {
+                float groundThreshold = planet.PlanetRadius + player.Data.PLAYER_ON_GROUND_THRESHOLD;
+                Gizmos.color = planetInteractionColor;
+                Gizmos.DrawWireSphere(planet.transform.position, groundThreshold);
+            }
+
+            if (showPlanetOrbits && planet.parentPlanet != null)
+            {
+                Gizmos.color = planetOrbitColor;
+                Gizmos.DrawWireSphere(planet.parentPlanet.transform.position, planet.OrbitRadius);
+            }
+        }
+    }
 
     //private void CreateSolarSystem()
     //{
     //    // Create sun and planets
     //    Planet sun = CreatePlanet(sunBlueprint);
-       
+
     //    foreach (PlanetBlueprint planetBlueprint in sunBlueprint.planets)
     //    {
     //        Planet planet = CreatePlanet(planetBlueprint);
@@ -47,8 +96,6 @@ public class GalaxyManager : MonoBehaviour
     //        }
     //    }
 
-    //    //// Add decorations
-    //    //DecoratePlanet(planet1);
     //}
 
     //private Planet CreatePlanet(CelestialBodyBlueprint blueprint)
@@ -84,22 +131,4 @@ public class GalaxyManager : MonoBehaviour
 
     //    planet.RescalePremadeDecorations();
     //}
-
-    //private void DecoratePlanet(Planet planet)
-    //{
-    //    uint[] fgTypes = new uint[] { 1, 2, 3, 4, 5, 6 };
-    //    uint[] bgTypes = new uint[] { 7, 8, 9, 10, 11 };
-    //    planet.Decorate(fgTypes, bgTypes);
-    //}
-
-    public void UpdatePlanets(float deltaTime)
-    {
-        foreach (Planet planet in planets)
-        {
-            if (planet != null)
-            {
-                planet.UpdatePlanet(deltaTime);
-            }
-        }
-    }
 }

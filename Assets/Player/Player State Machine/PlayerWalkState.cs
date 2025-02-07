@@ -9,7 +9,6 @@ public class PlayerWalkState : PlayerGroundedState
     public override void OnEnterState()
     {
         base.OnEnterState();
-        GameManager.Instance.audioController.AlterPlayerStateSoundParameter("Walk");
 
         CameraController.Instance.SetCameraState(CameraController.CameraState.Normal);
     }

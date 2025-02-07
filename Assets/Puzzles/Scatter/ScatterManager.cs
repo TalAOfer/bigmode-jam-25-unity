@@ -6,18 +6,20 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class ScatterManager : FlowerSocketSequencer
+public class ScatterManager : FlowerSocket
 {
-    public List<Collectible> collectibles = new();
-    public List<Collectible> activeCollectibles = new();
-    [ShowInInspector, ReadOnly] public int CollectiblesLeft => activeCollectibles.Count;
-    [SerializeField] private float tweenTime;
-    [SerializeField] private Ease tweenEase;
-    [SerializeField] private float tweenDelay;
+    [SerializeField] private Transform scatterPoint;
     [SerializeField] private TextMeshProUGUI countTMP;
 
+    [SerializeField, FoldoutGroup("Tween")] private float tweenTime;
+    [SerializeField, FoldoutGroup("Tween")] private Ease tweenEase;
+    [SerializeField, FoldoutGroup("Tween")] private float tweenDelay;
+    [ShowInInspector, ReadOnly] public int CollectiblesLeft => activeCollectibles.Count;
+    [ShowInInspector, ReadOnly] private List<Collectible> collectibles = new();
+    [ShowInInspector, ReadOnly] private List<Collectible> activeCollectibles = new();
+
     private bool hasScattered;
-    private bool finished => !activeCollectibles.Any();
+
     private void Awake()
     {
         countTMP.gameObject.SetActive(false);
@@ -30,6 +32,8 @@ public class ScatterManager : FlowerSocketSequencer
 
     public override IEnumerator StartSequence()
     {
+        yield return base.StartSequence();
+
         GameManager.Instance.audioController.PlayOneShot("World interaction/Plug in");
 
         if (!hasScattered)
@@ -39,7 +43,7 @@ public class ScatterManager : FlowerSocketSequencer
 
         else
         {
-            if (finished && !planet.completed)
+            if (!activeCollectibles.Any() && !planet.completed)
             {
                 countTMP.gameObject.SetActive(false);
                 yield return OnPlanetComplete();
@@ -107,7 +111,7 @@ public class ScatterManager : FlowerSocketSequencer
         activeCollectibles.Remove(collectible);
         SetCountText();
 
-        if (activeCollectibles.Any())
+        if (!activeCollectibles.Any())
         {
             GameManager.Instance.screenFlash.TriggerFlash();
         }
