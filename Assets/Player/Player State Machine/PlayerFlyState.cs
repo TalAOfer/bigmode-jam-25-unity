@@ -14,6 +14,7 @@ public class PlayerFlyState : PlayerBaseState
         GameManager.Instance.audioController.PlayOneShot("Player/Flying Loop");
         CameraController.Instance.StartShake(player.Data.PLAYER_TAKEOFF_SHAKE);
         CameraController.Instance.SetCameraState(CameraController.CameraState.Fly);
+        player.currentPlanet.TogglePlanetAtmosphere(false);
         GameManager.Instance.planetDirectionIndicatorManager.ShowIndicators();
     }
 
@@ -24,6 +25,7 @@ public class PlayerFlyState : PlayerBaseState
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Land");
         CameraController.Instance.StartShake(player.Data.PLAYER_LAND_SHAKE);
         CameraController.Instance.SetCameraState(CameraController.CameraState.Land);
+        player.currentPlanet.TogglePlanetAtmosphere(true);
         GameManager.Instance.planetDirectionIndicatorManager.HideIndicators();
 
         if (player.currentPlanet.planetType != PlanetType.Moon)

@@ -25,6 +25,12 @@ public class BackgroundManager : MonoBehaviour
         }
     }
 
+    public void FadeAtmosphericDecorations(Material material, bool toVisible)
+    {
+        float endValue = toVisible ? 1 : 0;
+        material.DOFloat(endValue, "_Alpha", fadeDuration).SetEase(fadeEase);
+    }
+
     private void OnDestroy()
     {
         DOTween.KillAll();

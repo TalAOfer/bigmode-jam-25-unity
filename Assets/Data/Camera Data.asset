@@ -16,7 +16,7 @@ MonoBehaviour:
   easing: 0.5
   normalZoom: 10
   sprintZoom: 15
-  flyZoom: 12
+  flyZoom: 15
   planetZoom: 25
   watchPlanetSpeed: 12
   watchPlanetEase: 2

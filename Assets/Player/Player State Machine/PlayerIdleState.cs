@@ -19,9 +19,9 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.UpdateState();
 
-        if (player.Input.JumpInput)
+        if (player.Input.FlyInput)
         {
-            ChangeState(player.FlyState);
+            ChangeState(player.ChargeFlyState);
         }
 
         if (player.Input.NormInputX != 0)

@@ -52,6 +52,8 @@ public class PlayerData : ScriptableObject
     public float PLAYER_DECELERATION = 8f;
 
     [FoldoutGroup("Flying")]
+    public float PLAYER_FLY_CHARGE_DURATION = 0.75f;
+    [FoldoutGroup("Flying")]
     public float PLAYER_FLY_SPEED = 32f;
     [FoldoutGroup("Flying")]
     public float PLAYER_FLY_HANDLING = 0.05f;

@@ -1,4 +1,5 @@
 using EasyTextEffects;
+using EasyTextEffects.Effects;
 using Sirenix.OdinInspector;
 using System.Collections;
 using TMPro;
@@ -12,8 +13,24 @@ public class TextManager : MonoBehaviour
     [FoldoutGroup("Test"), SerializeField] DialogueEntry autoplayExample;
     [FoldoutGroup("Test"), SerializeField] DialogueAsset dialogueExample;
 
-    [SerializeField] float fadeoutDuration = 1.5f;
+    [SerializeField] private TextEffectInstance fadeOutEffect;
+    private float GetFadeoutDuration()
+    {
+        float duration = 1.5f;
+        if (fadeOutEffect != null)
+        {
+            duration = fadeOutEffect.TotalDuration();
+        } 
+        
+        else
+        {
+            Debug.Log("Please assign a fadeout effect. Defaulting fadeout duration to 1.5f");
+        }
 
+        Debug.Log(duration);
+
+        return duration;
+    }
     private bool clickable;
     private bool playerClicked;
 
@@ -43,7 +60,7 @@ public class TextManager : MonoBehaviour
 
         effect.StartManualEffect("fadeOut");
 
-        yield return new WaitForSeconds(fadeoutDuration);
+        yield return new WaitForSeconds(GetFadeoutDuration());
 
         effect.gameObject.SetActive(false);
         isAutoPlaying = false;
@@ -72,7 +89,7 @@ public class TextManager : MonoBehaviour
 
             effect.StartManualEffect("fadeOut");
 
-            yield return new WaitForSeconds(fadeoutDuration);
+            yield return new WaitForSeconds(GetFadeoutDuration());
 
             tmp.gameObject.SetActive(false);
         }

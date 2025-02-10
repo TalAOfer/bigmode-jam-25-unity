@@ -8,8 +8,8 @@ public class PlayerInputController : MonoBehaviour
     public int NormInputY { get; private set; }
     public bool SprintInput { get; private set; }
     public void UseDashInput() => SprintInput = false;
-    public bool JumpInput { get; private set; }
-    public void UseJumpInput() => JumpInput = false;
+    public bool FlyInput { get; private set; }
+    public void UseJumpInput() => FlyInput = false;
  
     public void HandleMoveInput(InputAction.CallbackContext ctx)
     {
@@ -35,12 +35,12 @@ public class PlayerInputController : MonoBehaviour
     {
         if (ctx.started)
         {
-            JumpInput = true;
+            FlyInput = true;
         }
 
         else if (ctx.canceled)
         {
-            JumpInput = false;
+            FlyInput = false;
         }
     }
 

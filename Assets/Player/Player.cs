@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
 
     private Vector2 lastNormal;
 
+    #region State Machine
+
     public string PlayerStateName;
     public PlayerStateMachine PlayerStateMachine { get; private set; }
     public PlayerIdleState IdleState { get; private set; }
@@ -43,10 +45,13 @@ public class Player : MonoBehaviour
     public PlayerRunState RunState { get; private set; }
     public PlayerSprintState SprintState { get; private set; }
     public PlayerAirborneState AirborneState { get; private set; }
+    public PlayerChargeFlyState ChargeFlyState { get; private set; }
     public PlayerFlyState FlyState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
     public PlayerConnectState ConnectState { get; private set; }
     public PlayerPluggedState PluggedState {  get; private set; }
+
+    #endregion
 
     public Collider2D pickupCollider;
     public Collider2D socketCollider;
@@ -59,6 +64,8 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         Anim = GetComponent<Animator>();
 
+        #region State Machine
+
         PlayerStateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, PlayerStateMachine, "Idle");
         WalkState = new PlayerWalkState(this, PlayerStateMachine, "Walk");
@@ -66,11 +73,14 @@ public class Player : MonoBehaviour
         SprintState = new PlayerSprintState(this, PlayerStateMachine, "Sprint");
         JumpState = new PlayerJumpState(this, PlayerStateMachine, "Airborne");
         AirborneState = new PlayerAirborneState(this, PlayerStateMachine, "Airborne");
+        ChargeFlyState = new PlayerChargeFlyState(this, PlayerStateMachine, "ChargeFly");
         FlyState = new PlayerFlyState(this, PlayerStateMachine, "Fly");
         ConnectState = new PlayerConnectState(this, PlayerStateMachine, "Airborne");
         PluggedState = new PlayerPluggedState(this, PlayerStateMachine, "Plug");
 
         PlayerStateMachine.InitializeState(IdleState);
+
+        #endregion
     }
 
     public void PlayWalkSound() => GameManager.Instance.audioController.PlayOneShot("Player/Walk");

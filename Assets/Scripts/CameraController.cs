@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine;
 
@@ -28,6 +29,8 @@ public class CameraController : MonoBehaviour
         Land,
         Fly,
     }
+
+    [Button] public void SnapCameraToPlayer() => cam.transform.position = new (player.transform.position.x, player.transform.position.y, cam.position.z);
 
     private void Awake()
     {

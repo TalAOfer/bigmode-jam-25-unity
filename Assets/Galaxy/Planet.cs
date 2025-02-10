@@ -34,6 +34,10 @@ public class Planet : MonoBehaviour
 
     private readonly float DEG2RAD = Mathf.Deg2Rad;
 
+    [SerializeField] private Material defaultMaterial;
+    public Material OnGroundDecorationMaterial { get; private set; }
+    public Material AtmosphericDecorationMaterial { get; private set; }
+    [SerializeField, ReadOnly] List<DecorationManager> decorationManagers;
     public void Initialize()
     {
         orbitRadius = parentPlanet != null ?
@@ -47,7 +51,42 @@ public class Planet : MonoBehaviour
             Color transparentColor = BackgroundColor;
             transparentColor.a = 0f;
             BackgroundSR.color = transparentColor;
+
+            InitializeDecorationMaterials();
         }
+    }
+
+    public void InitializeDecorations()
+    {
+        decorationManagers = GetComponentsInChildren<DecorationManager>().ToList();
+
+        foreach (var decorationManager in decorationManagers)
+        {
+            decorationManager.Initialize(this);
+        }
+    }
+
+    public void InitializeDecorationMaterials()
+    {
+        OnGroundDecorationMaterial = new Material(defaultMaterial);
+        AtmosphericDecorationMaterial = new Material(defaultMaterial);
+
+        foreach (var decorationManager in decorationManagers)
+        {
+            switch (decorationManager.Type)
+            {
+                case DecorationManager.DecorationType.OnGround:
+                    decorationManager.InitializeMaterial(OnGroundDecorationMaterial);
+                    break;
+                case DecorationManager.DecorationType.Atmoshperic:
+                    decorationManager.InitializeMaterial(AtmosphericDecorationMaterial);
+                    break;
+                case DecorationManager.DecorationType.Interactable:
+                    break;
+            }
+        }
+
+        AtmosphericDecorationMaterial.SetFloat("_Alpha", 0.5f);
     }
 
     public IEnumerator OnPlanetComplete()
@@ -91,21 +130,29 @@ public class Planet : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void TogglePlanetAtmosphere(bool enable)
     {
-        if (collision.CompareTag("PlayerPickup")) 
-        {
-            GameManager.Instance.backgroundManager.FadePlanetSkybox(this, true);
-        }
+        GameManager.Instance.backgroundManager.FadePlanetSkybox(this, enable);
+        GameManager.Instance.backgroundManager.FadeAtmosphericDecorations(AtmosphericDecorationMaterial, enable);
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("PlayerPickup"))
-        {
-            GameManager.Instance.backgroundManager.FadePlanetSkybox(this, false);
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("PlayerPickup")) 
+    //    {
+    //        GameManager.Instance.backgroundManager.FadePlanetSkybox(this, true);
+    //        GameManager.Instance.backgroundManager.FadeAtmosphericDecorations(AtmosphericDecorationMaterial, true);
+    //    }
+    //}
+
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("PlayerPickup"))
+    //    {
+    //        GameManager.Instance.backgroundManager.FadePlanetSkybox(this, false);
+    //        GameManager.Instance.backgroundManager.FadeAtmosphericDecorations(AtmosphericDecorationMaterial, false);
+    //    }
+    //}
 }
 
 public enum PlanetType
