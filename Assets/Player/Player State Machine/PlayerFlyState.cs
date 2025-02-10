@@ -10,7 +10,6 @@ public class PlayerFlyState : PlayerBaseState
     {
         base.OnEnterState();
         player.socketCollider.enabled = false;
-        GameManager.Instance.backgroundManager.GoToSpaceBG();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Jump");
         GameManager.Instance.audioController.PlayOneShot("Player/Flying Loop");
         CameraController.Instance.StartShake(player.Data.PLAYER_TAKEOFF_SHAKE);
@@ -22,11 +21,15 @@ public class PlayerFlyState : PlayerBaseState
     {
         base.OnExitState();
         player.socketCollider.enabled = true;
-        GameManager.Instance.backgroundManager.GoToPlanetSkybox();
         GameManager.Instance.audioController.PlayOneShot("Player/Fly Land");
         CameraController.Instance.StartShake(player.Data.PLAYER_LAND_SHAKE);
         CameraController.Instance.SetCameraState(CameraController.CameraState.Land);
         GameManager.Instance.planetDirectionIndicatorManager.HideIndicators();
+
+        if (player.currentPlanet.planetType != PlanetType.Moon)
+        {
+            GameManager.Instance.PlanetTextManager.AutoPlayText(player.currentPlanet.name, 2.5f);
+        }
     }
 
     public override void UpdateState()
@@ -48,7 +51,7 @@ public class PlayerFlyState : PlayerBaseState
         if (xInput != 0)
         {
             player.rotation -= xInput * player.Data.PLAYER_FLY_HANDLING * Time.deltaTime;
-            player.facing = xInput > 0 ? -1 : 1;
+            //player.facing = xInput > 0 ? -1 : 1;
         }
     }
 }

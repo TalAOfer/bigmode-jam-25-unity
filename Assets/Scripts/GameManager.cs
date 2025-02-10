@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public ScreenFlash screenFlash;
     public BackgroundManager backgroundManager;
     public PlanetDirectionIndicatorManager planetDirectionIndicatorManager;
+    public TextManager PlanetTextManager;
 
     [Header("Game Settings")]
     [SerializeField] private float worldBoundary = 250f;
@@ -44,14 +45,7 @@ public class GameManager : MonoBehaviour
     {
         galaxyManager.Initialize();
         InitializePlayer();
-        backgroundManager.GoToPlanetSkybox();
         isInitialized = true;
-        StartCoroutine(PlayMusic());
-    }
-
-    public IEnumerator PlayMusic()
-    {
-        yield return new WaitForSeconds(1f);
         FMODUnity.RuntimeManager.PlayOneShot("event:/Music/Music");
     }
 

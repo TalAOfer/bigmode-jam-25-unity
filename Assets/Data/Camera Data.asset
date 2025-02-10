@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: Camera Data
   m_EditorClassIdentifier: 
   baseZoom: 10
-  angle: 0
   easing: 0.5
   normalZoom: 10
   sprintZoom: 15
@@ -23,4 +22,4 @@ MonoBehaviour:
   watchPlanetEase: 2
   watchPlanetZoomDuration: 0.5
   landRotationSpeed: 0.025
-  onPlanetRotationSpeed: 0.1
+  onPlanetRotationSpeed: 0.05

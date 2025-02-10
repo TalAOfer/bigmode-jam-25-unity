@@ -1,3 +1,5 @@
+using DG.Tweening;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Bellflower : MonoBehaviour
@@ -6,6 +8,8 @@ public class Bellflower : MonoBehaviour
     [SerializeField] private int index;
     [SerializeField] private NotesAndColors notes;
     [SerializeField] private ParticleSystem particles;
+    [SerializeField] private BellMotion bellMotion;
+
     public string CurrentNote => notes.value[index].letter;
     [SerializeField] private float bounceForce = 1.5f;
 
@@ -21,6 +25,8 @@ public class Bellflower : MonoBehaviour
             }
         }
     }
+
+    
 
     public void OnHit(Player player)
     {
@@ -44,6 +50,7 @@ public class Bellflower : MonoBehaviour
         string noteString = $"World interaction/Musical puzzle/{CurrentNote} note";
         GameManager.Instance.audioController.PlayOneShotInPosition(noteString, GameManager.Instance.player.transform.position);
         EmitParticle();
+        bellMotion.Ring();
     }
 
     private void EmitParticle()

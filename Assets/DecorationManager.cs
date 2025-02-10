@@ -8,31 +8,35 @@ using UnityEditor;
 
 public class DecorationManager : MonoBehaviour
 {
-    [SerializeField] private bool isScatterFolder;
+    [SerializeField] private bool interactable;
+    [SerializeField] private bool overrideFolderName;
+    [SerializeField] private bool shouldSpin;
+    [ShowIf("shouldSpin"), SerializeField] private float spinSpeed;
+    [ShowIf("overrideFolderName"), SerializeField] private string nameOverride;
 
     [SerializeField] private Planet parentPlanet;
     [SerializeField] private float baseDecorationHeight = 1f;
     [SerializeField] private DecorationLayers layerName;
     [SerializeField] private int orderInLayer;
 
-    [HideIf("isScatterFolder")]
+    [HideIf("interactable")]
     [SerializeField] private GameObject decorationPrefab;
-    [HideIf("isScatterFolder")]
+    [HideIf("interactable")]
     [SerializeField] private Sprite decorationSprite; 
 
-    [ShowIf("isScatterFolder")]
-    [SerializeField] private GameObject scatterPrefab;
+    [ShowIf("interactable")]
+    [SerializeField] private GameObject interactablePrefab;
 
 #if UNITY_EDITOR
 
     [Button("Spawn Decoration")]
     public void SpawnDecoration()
     {
-        GameObject prefab = isScatterFolder ? scatterPrefab : decorationPrefab;
+        GameObject prefab = interactable ? interactablePrefab : decorationPrefab;
         GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         instance.transform.SetParent(transform, false);
 
-        if (!isScatterFolder)
+        if (!interactable)
         {
             instance.name = decorationSprite.name;
             instance.GetComponentInChildren<SpriteRenderer>().sprite = decorationSprite;
@@ -47,6 +51,14 @@ public class DecorationManager : MonoBehaviour
 #endif
 
 
+    private void Update()
+    {
+        if (shouldSpin)
+        {
+            transform.Rotate(0f, 0f, spinSpeed * Time.deltaTime);
+        }
+    }
+
     [Button]
     public void RescaleDecorations()
     {
@@ -55,7 +67,8 @@ public class DecorationManager : MonoBehaviour
             parentPlanet = GetComponentInParent<Planet>();
         }
 
-        gameObject.name = isScatterFolder ? "Scatter Folder" : layerName.ToString() + " " + orderInLayer.ToString();
+        gameObject.name = interactable ? interactablePrefab.name + " Folder" : layerName.ToString() + " " + orderInLayer.ToString();
+        if (overrideFolderName) gameObject.name = nameOverride;
 
         List<Decoration> decorations = GetComponentsInChildren<Decoration>().ToList();
 

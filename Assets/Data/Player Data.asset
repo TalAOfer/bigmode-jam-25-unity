@@ -33,8 +33,8 @@ MonoBehaviour:
   PLAYER_FLY_SPEED: 16
   PLAYER_FLY_HANDLING: 100
   PLAYER_TAKEOFF_SHAKE:
-    amount: 0.15
+    amount: 0.25
     duration: 0.25
   PLAYER_LAND_SHAKE:
-    amount: 0.15
+    amount: 0.25
     duration: 0.25

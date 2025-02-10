@@ -1,27 +1,32 @@
 using DG.Tweening;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class BackgroundManager : MonoBehaviour
 {
-
-    [SerializeField] private SpriteRenderer SpaceBG;
-    [SerializeField] private SpriteRenderer PlanetBG;
     [SerializeField] private float fadeDuration = 0.5f;
     [SerializeField] private Ease fadeEase;
+    private Tween fadeTween;
 
-    public void GoToSpaceBG()
+    public void FadePlanetSkybox(Planet planet, bool toVisible)
     {
-        PlanetBG.DOFade(0, fadeDuration).SetEase(fadeEase);
+        if (fadeTween != null && fadeTween.active)
+        {
+            fadeTween.Kill();
+        }
+
+        if (toVisible)
+        {
+            fadeTween = planet.BackgroundSR.DOFade(planet.BackgroundColor.a, fadeDuration).SetEase(fadeEase);
+        }
+
+        else
+        {
+            fadeTween = planet.BackgroundSR.DOFade(0, fadeDuration).SetEase(fadeEase);
+        }
     }
 
-    public void GoToPlanetSkybox()
+    private void OnDestroy()
     {
-        Planet planet = GameManager.Instance.galaxyManager.planets[GameManager.Instance.player.planetIdx];
-        Color color = planet.skyboxColor;
-        color.a = 0f;
-        PlanetBG.color = color;
-
-        PlanetBG.DOFade(planet.skyboxColor.a, fadeDuration).SetEase(fadeEase);
+        DOTween.KillAll();
     }
 }

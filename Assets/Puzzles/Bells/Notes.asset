@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Notes
   m_EditorClassIdentifier: 
   value:
-  - letter: B
-    color: {r: 1, g: 0.33490568, b: 0.45714033, a: 1}
   - letter: C
     color: {r: 1, g: 0.9697446, b: 0.4009434, a: 1}
-  - letter: D
-    color: {r: 0.55174375, g: 0.3066038, b: 1, a: 1}
   - letter: G
     color: {r: 0.3066038, g: 0.75485975, b: 1, a: 1}
+  - letter: B
+    color: {r: 1, g: 0.33490568, b: 0.45714033, a: 1}
+  - letter: D
+    color: {r: 0.55174375, g: 0.3066038, b: 1, a: 1}
